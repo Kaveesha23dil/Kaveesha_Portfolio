@@ -44,7 +44,7 @@ export default function About() {
   }, []);
 
   return (
-    <section ref={section} id="about" className="about-section">
+    <section ref={section} id="about" data-scroll-section className="about-section">
       <div className="about-ring" aria-hidden="true"><span>DESIGN · DEVELOP · DELIVER · </span></div>
       <div className="about-topline about-reveal">
         <span>02 / ABOUT ME</span>

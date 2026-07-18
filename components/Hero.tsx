@@ -1,12 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { ArrowRight, Cloud, Menu, Sparkles, X } from "lucide-react";
-import { useLayoutEffect, useRef, useState } from "react";
+import { ArrowRight, Cloud, Sparkles } from "lucide-react";
+import { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 import Loader from "@/components/Loader";
-
-const links = ["Home", "Projects", "Services", "About", "Process", "Testimonials", "Contact"];
 
 function SunMark({ small = false }: { small?: boolean }) {
   return (
@@ -18,13 +16,10 @@ function SunMark({ small = false }: { small?: boolean }) {
 
 export default function Hero() {
   const root = useRef<HTMLElement>(null);
-  const [open, setOpen] = useState(false);
-
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
-      tl.from(".nav-in", { y: -18, opacity: 0, duration: 0.7 })
-        .from(".hero-reveal", { y: 36, opacity: 0, duration: 0.8, stagger: 0.1 }, "-=0.35")
+      tl.from(".hero-reveal", { y: 36, opacity: 0, duration: 0.8, stagger: 0.1 })
         .from(".visual-card", { x: 55, opacity: 0, scale: 0.96, duration: 1 }, "-=0.85")
         .from(".orbit-shape", { scale: 0, opacity: 0, duration: 0.8, stagger: 0.12 }, "-=0.8")
         .from(".floating-note", { y: 25, opacity: 0, duration: 0.65 }, "-=0.4");
@@ -37,22 +32,11 @@ export default function Hero() {
   }, []);
 
   return (
-    <main ref={root} className="hero-shell">
+    <main ref={root} id="home" data-scroll-section className="hero-shell">
       <Loader />
       <div className="grain" />
       <div className="side-orb side-orb--left" />
       <div className="side-orb side-orb--right" />
-
-      <header className="nav-in topbar">
-        <a href="#" className="brand" aria-label="Kaveesha Dilshan home"><SunMark /><span>KAVEESHA DILSHAN</span></a>
-        <nav className="desktop-nav" aria-label="Primary navigation">
-          {links.map((link, index) => <a key={link} href={`#${link.toLowerCase()}`} className={index === 0 ? "active" : ""}>{link}</a>)}
-        </nav>
-        <a className="talk-btn" href="mailto:hello@windsun.dev"><span>Let&apos;s Talk</span><i><ArrowRight size={17} /></i></a>
-        <button className="menu-btn" onClick={() => setOpen(!open)} aria-label="Toggle menu">{open ? <X /> : <Menu />}</button>
-      </header>
-
-      {open && <nav className="mobile-nav">{links.map(link => <a key={link} href={`#${link.toLowerCase()}`} onClick={() => setOpen(false)}>{link}</a>)}</nav>}
 
       <section className="hero-grid">
         <div className="copy-col">
@@ -60,7 +44,7 @@ export default function Hero() {
           <h1 className="hero-reveal">Transforming<br /><em>Ideas</em> Into Digital<br />Products</h1>
           <p className="hero-reveal intro">I design and build user-centered websites, applications, and digital experiences that are beautiful, functional, and impactful.</p>
           <div className="hero-reveal actions">
-            <a href="#projects" className="primary-btn">View Projects <ArrowRight size={17} /></a>
+            <a href="/projects" className="primary-btn">View Projects <ArrowRight size={17} /></a>
             <a href="mailto:hello@windsun.dev" className="secondary-btn">Hire Me <ArrowRight size={17} /></a>
           </div>
           <div className="hero-reveal trust">

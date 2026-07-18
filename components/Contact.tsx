@@ -35,7 +35,7 @@ export default function Contact() {
   }
 
   return (
-    <section ref={section} id="contact" className="contact-section">
+    <section ref={section} id="contact" data-scroll-section className="contact-section">
       <div className="contact-orbit" aria-hidden="true"><i /><span>LET&apos;S CREATE · LET&apos;S CREATE ·</span></div>
       <div className="contact-topline contact-reveal">
         <span>07 / CONTACT</span>

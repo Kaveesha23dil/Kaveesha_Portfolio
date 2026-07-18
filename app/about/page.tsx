@@ -1,0 +1,14 @@
+import type { Metadata } from "next";
+import About from "@/components/About";
+import Services from "@/components/Services";
+import Process from "@/components/Process";
+import Footer from "@/components/Footer";
+
+export const metadata: Metadata = {
+  title: "About Me — Kaveesha Dilshan",
+  description: "About Kaveesha Dilshan, a multidisciplinary designer and creative developer based in Sri Lanka.",
+};
+
+export default function AboutPage() {
+  return <main className="inner-page"><About /><Services /><Process /><Footer /></main>;
+}

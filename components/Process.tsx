@@ -68,7 +68,7 @@ export default function Process() {
   }, []);
 
   return (
-    <section ref={section} id="process" className="process-section">
+    <section ref={section} id="process" data-scroll-section className="process-section">
       <div className="process-topline process-reveal">
         <span>05 / WORK PROCESS</span>
         <span>ONE CLEAR PATH · FOUR FOCUSED PHASES</span>

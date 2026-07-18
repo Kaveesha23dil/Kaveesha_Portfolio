@@ -63,7 +63,7 @@ export default function Services() {
   }, []);
 
   return (
-    <section ref={section} id="services" className="services-section">
+    <section ref={section} id="services" data-scroll-section className="services-section">
       <div className="services-orbit" aria-hidden="true"><span /></div>
       <div className="services-topline services-reveal">
         <span>04 / SERVICES</span>
