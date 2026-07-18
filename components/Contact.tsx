@@ -103,13 +103,6 @@ export default function Contact() {
         </aside>
       </div>
 
-      <footer className="site-footer contact-reveal">
-        <a href="#" className="footer-brand"><span className="sun-mark"><span /></span>WIND SUN</a>
-        <p>Independent designer &amp; developer<br />building thoughtful digital experiences.</p>
-        <div className="footer-links"><a href="#projects">Work</a><a href="#services">Services</a><a href="#about">About</a></div>
-        <a href="#" className="back-to-top">Back to top <ArrowUpRight size={16} /></a>
-        <span className="footer-copy">© 2026 WIND SUN. ALL RIGHTS RESERVED.</span>
-      </footer>
     </section>
   );
 }
