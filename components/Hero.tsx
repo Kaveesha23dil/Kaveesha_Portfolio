@@ -77,7 +77,7 @@ export default function Hero() {
           <div className="orbit-shape wire wire--two" />
           <div className="visual-card">
             <div className="card-glow" />
-            <Image src="/hero-portrait.png" alt="Wind Sun, digital designer" fill priority sizes="(max-width: 900px) 92vw, 42vw" />
+            <Image src="/hero-kaveesha.png" alt="Kaveesha, digital designer and developer" fill priority sizes="(max-width: 900px) 92vw, 42vw" />
             <span className="cross cross--one">+</span><span className="cross cross--two">+</span>
           </div>
           <div className="floating-note"><SunMark small /><p>Crafting digital<br />experiences that<br />connect and convert.</p><Sparkles size={14} /></div>
