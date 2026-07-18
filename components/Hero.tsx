@@ -44,7 +44,7 @@ export default function Hero() {
       <div className="side-orb side-orb--right" />
 
       <header className="nav-in topbar">
-        <a href="#" className="brand" aria-label="Wind Sun home"><SunMark /><span>WIND SUN</span></a>
+        <a href="#" className="brand" aria-label="Kaveesha Dilshan home"><SunMark /><span>KAVEESHA DILSHAN</span></a>
         <nav className="desktop-nav" aria-label="Primary navigation">
           {links.map((link, index) => <a key={link} href={`#${link.toLowerCase()}`} className={index === 0 ? "active" : ""}>{link}</a>)}
         </nav>

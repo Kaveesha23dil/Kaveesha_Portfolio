@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Wind Sun — Digital Designer",
+  title: "Kaveesha Dilshan — Digital Designer",
   description: "Digital designer crafting memorable products and experiences.",
 };
 

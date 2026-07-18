@@ -51,9 +51,9 @@ export default function Footer() {
 
       <div className="footer-main">
         <div className="footer-identity footer-reveal">
-          <a href="#" className="footer-logo" aria-label="Wind Sun home">
+          <a href="#" className="footer-logo" aria-label="Kaveesha Dilshan home">
             <span className="sun-mark"><span /></span>
-            <span>WIND SUN</span>
+            <span>KAVEESHA DILSHAN</span>
           </a>
           <p>Independent designer and creative developer crafting thoughtful digital experiences for ambitious brands.</p>
           <span className="footer-status"><i /> AVAILABLE FOR SELECT PROJECTS</span>
@@ -81,10 +81,10 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="footer-wordmark" aria-label="Wind Sun"><span>WIND</span><span>SUN</span></div>
+      <div className="footer-wordmark" aria-label="Kaveesha Dilshan"><span>KAVEESHA</span><span>DILSHAN</span></div>
 
       <div className="footer-bottom footer-reveal">
-        <span>© 2026 WIND SUN. ALL RIGHTS RESERVED.</span>
+        <span>© 2026 KAVEESHA DILSHAN. ALL RIGHTS RESERVED.</span>
         <span>DESIGNED &amp; BUILT WITH INTENTION.</span>
         <a href="#" aria-label="Back to top">BACK TO TOP <i><ArrowUp size={15} /></i></a>
       </div>
