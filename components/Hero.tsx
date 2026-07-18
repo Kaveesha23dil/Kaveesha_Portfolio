@@ -4,6 +4,7 @@ import Image from "next/image";
 import { ArrowRight, Cloud, Menu, Sparkles, X } from "lucide-react";
 import { useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap";
+import Loader from "@/components/Loader";
 
 const links = ["Home", "Projects", "Services", "About", "Process", "Testimonials", "Contact"];
 
@@ -37,6 +38,7 @@ export default function Hero() {
 
   return (
     <main ref={root} className="hero-shell">
+      <Loader />
       <div className="grain" />
       <div className="side-orb side-orb--left" />
       <div className="side-orb side-orb--right" />
