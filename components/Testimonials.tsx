@@ -60,7 +60,7 @@ export default function Testimonials() {
   }, []);
 
   return (
-    <section ref={section} id="testimonials" className="testimonials-section">
+    <section ref={section} id="testimonials" data-scroll-section className="testimonials-section">
       <div className="testimonial-halo" aria-hidden="true"><i /><i /><i /></div>
 
       <div className="testimonials-topline testimonials-reveal">

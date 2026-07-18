@@ -27,7 +27,7 @@ export default function Projects() {
   }, []);
 
   return (
-    <section ref={section} id="projects" className="projects-section">
+    <section ref={section} id="projects" data-scroll-section className="projects-section">
       <div className="projects-header">
         <div><span>03 / SELECTED WORK</span><span className="project-count">(03 PROJECTS)</span></div>
         <h2>Selected work that turns<br />ideas into <em>impact.</em></h2>
@@ -37,7 +37,7 @@ export default function Projects() {
       <div className="projects-list">
         {projects.map((project) => (
           <article className="project-card" key={project.title}>
-            <a href="#contact" className="project-image project-reveal" aria-label={`View ${project.title} case study`}>
+              <a href="/contact" className="project-image project-reveal" aria-label={`Enquire about ${project.title}`}>
               <Image src={project.image} alt={`${project.title} project presentation`} fill sizes="(max-width: 900px) 94vw, 58vw" />
               <span className="project-arrow"><ArrowUpRight size={24} /></span>
               {project.featured && <span className="featured-pill">FEATURED PROJECT</span>}
@@ -50,7 +50,7 @@ export default function Projects() {
         ))}
       </div>
 
-      <a href="#contact" className="all-work-link">View all projects <span><ArrowUpRight size={20} /></span></a>
+      <a href="/contact" className="all-work-link">Start a project <span><ArrowUpRight size={20} /></span></a>
     </section>
   );
 }
