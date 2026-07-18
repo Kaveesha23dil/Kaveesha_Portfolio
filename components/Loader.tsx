@@ -69,7 +69,7 @@ export default function Loader() {
         <div className="loader-grid" aria-hidden="true" />
         <div className="loader-brand">
           <span className="loader-sun"><i /></span>
-          <span>WIND SUN</span>
+          <span>KAVEESHA DILSHAN</span>
         </div>
         <div className="loader-status">
           <div className="loader-copy"><span>LOADING EXPERIENCE</span><span ref={number}>000</span></div>

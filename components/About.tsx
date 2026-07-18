@@ -58,7 +58,7 @@ export default function About() {
         </div>
 
         <div className="about-story about-reveal">
-          <p className="story-lead">I&apos;m Wind Sun, a multidisciplinary designer and creative developer focused on the space where thoughtful design meets purposeful technology.</p>
+          <p className="story-lead">I&apos;m Kaveesha Dilshan, a multidisciplinary designer and creative developer focused on the space where thoughtful design meets purposeful technology.</p>
           <p>I care about the details people feel but don&apos;t always notice—clear hierarchy, intuitive interaction, expressive motion, and a visual language that makes every product unmistakably its own.</p>
           <a href="mailto:hello@windsun.dev" className="about-link">More about my journey <ArrowUpRight size={18} /></a>
         </div>
