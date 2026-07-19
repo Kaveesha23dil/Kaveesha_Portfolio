@@ -49,7 +49,7 @@ export default function TechStack() {
 
   return (
     <section ref={section} data-scroll-section className="tech-stack-section">
-      <div className="tech-stack-topline stack-reveal"><span>03 / TECH STACK</span><span>TOOLS I USE TO SHIP IDEAS</span></div>
+      <div className="tech-stack-topline stack-reveal"><span>04 / TECH STACK</span><span>TOOLS I USE TO SHIP IDEAS</span></div>
       <div className="tech-stack-intro">
         <div className="stack-reveal">
           <p className="eyebrow"><Asterisk size={15} /> MY TOOLKIT</p>

@@ -36,7 +36,7 @@ const services = [
   },
 ];
 
-export default function Services() {
+export default function Services({ sectionNumber = "04" }: { sectionNumber?: string }) {
   const section = useRef<HTMLElement>(null);
 
   useLayoutEffect(() => {
@@ -66,7 +66,7 @@ export default function Services() {
     <section ref={section} id="services" data-scroll-section className="services-section">
       <div className="services-orbit" aria-hidden="true"><span /></div>
       <div className="services-topline services-reveal">
-        <span>04 / SERVICES</span>
+        <span>{sectionNumber} / SERVICES</span>
         <span>STRATEGY · DESIGN · DEVELOPMENT</span>
       </div>
 
