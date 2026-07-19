@@ -7,9 +7,9 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 const projects = [
-  { number: "01", title: "Intrinsic Tech", category: "Website Redesign · UI/UX", year: "2026", image: "/Home Page Desktop view.png", href: "/projects/intrinsic-tech", description: "A complete responsive redesign that makes a complex AI consultancy feel clear, credible, and ready for growth.", featured: true, imagePosition: "top" },
-  { number: "02", title: "GTA VI Experience", category: "Creative Development · Motion", year: "2025", image: "https://raw.githubusercontent.com/Kaveesha23dil/GTAVI_Landingpage/main/public/images/hero-bg.webp", href: "https://gtavi-landingpage.vercel.app/", github: "https://github.com/Kaveesha23dil/GTAVI_Landingpage", description: "A cinematic, responsive GTA VI landing page with GSAP-powered storytelling, character sequences, and immersive video transitions." },
-  { number: "03", title: "Windows XP Portfolio", category: "Interactive Development · React", year: "2025", image: "https://raw.githubusercontent.com/Kaveesha23dil/Windows_Xp_Portfolio/main/public/background.png", href: "https://windows-xp-portfolio-lime.vercel.app/", github: "https://github.com/Kaveesha23dil/Windows_Xp_Portfolio", description: "A nostalgic, fully interactive portfolio desktop with authentic XP windows, Start menu, taskbar, command prompt, Paint, Notepad, and project explorer." },
+  { number: "01", title: "Intrinsic Tech", category: "Website Redesign · UI/UX", year: "2026", image: "/mockup-intrinsic-tech.png", href: "/projects/intrinsic-tech", description: "A complete responsive redesign that makes a complex AI consultancy feel clear, credible, and ready for growth.", featured: true },
+  { number: "02", title: "GTA VI Experience", category: "Creative Development · Motion", year: "2025", image: "/mockup-gtavi.png", href: "https://gtavi-landingpage.vercel.app/", github: "https://github.com/Kaveesha23dil/GTAVI_Landingpage", description: "A cinematic, responsive GTA VI landing page with GSAP-powered storytelling, character sequences, and immersive video transitions." },
+  { number: "03", title: "Windows XP Portfolio", category: "Interactive Development · React", year: "2025", image: "/mockup-windows-xp.png", href: "https://windows-xp-portfolio-lime.vercel.app/", github: "https://github.com/Kaveesha23dil/Windows_Xp_Portfolio", description: "A nostalgic, fully interactive portfolio desktop with authentic XP windows, Start menu, taskbar, command prompt, Paint, Notepad, and project explorer." },
 ];
 
 export default function Projects() {
@@ -36,7 +36,7 @@ export default function Projects() {
       <div className="projects-list">
         {projects.map((project) => (
           <article className="project-card" key={project.title}>
-            <a href={project.href} target={project.href.startsWith("http") ? "_blank" : undefined} rel={project.href.startsWith("http") ? "noreferrer" : undefined} className={`project-image project-reveal ${project.imagePosition === "top" ? "project-image--intrinsic" : ""}`} aria-label={`View ${project.title} project`}>
+            <a href={project.href} target={project.href.startsWith("http") ? "_blank" : undefined} rel={project.href.startsWith("http") ? "noreferrer" : undefined} className="project-image project-reveal" aria-label={`View ${project.title} project`}>
               <Image src={project.image} alt={`${project.title} project presentation`} fill sizes="(max-width: 900px) 94vw, 58vw" />
               <span className="project-arrow"><ArrowUpRight size={24} /></span>
               {project.featured && <span className="featured-pill">FEATURED REDESIGN</span>}
