@@ -36,7 +36,7 @@ const steps = [
   },
 ];
 
-export default function Process() {
+export default function Process({ sectionNumber = "05" }: { sectionNumber?: string }) {
   const section = useRef<HTMLElement>(null);
 
   useLayoutEffect(() => {
@@ -70,7 +70,7 @@ export default function Process() {
   return (
     <section ref={section} id="process" data-scroll-section className="process-section">
       <div className="process-topline process-reveal">
-        <span>05 / WORK PROCESS</span>
+        <span>{sectionNumber} / WORK PROCESS</span>
         <span>ONE CLEAR PATH · FOUR FOCUSED PHASES</span>
       </div>
 
