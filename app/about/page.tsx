@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import About from "@/components/About";
+import TechStack from "@/components/TechStack";
 import Services from "@/components/Services";
 import Process from "@/components/Process";
 import Footer from "@/components/Footer";
@@ -10,5 +11,5 @@ export const metadata: Metadata = {
 };
 
 export default function AboutPage() {
-  return <main className="inner-page"><About /><Services /><Process /><Footer /></main>;
+  return <main className="inner-page"><About /><TechStack /><Services /><Process /><Footer /></main>;
 }

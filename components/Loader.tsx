@@ -12,7 +12,7 @@ export default function Loader() {
 
   useLayoutEffect(() => {
     if (sessionStorage.getItem(SESSION_KEY)) {
-      setVisible(false);
+      queueMicrotask(() => setVisible(false));
       return;
     }
 
