@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 import DevelopmentCaseStudy, { DevelopmentProject } from "@/components/DevelopmentCaseStudy";
 import Footer from "@/components/Footer";
+import JsonLd from "@/components/JsonLd";
+import { absoluteUrl, createMetadata, createProjectBreadcrumb, siteConfig } from "@/lib/site";
 
-export const metadata: Metadata = { title: "Windows XP Portfolio — Kaveesha Dilshan", description: "Development case study for an interactive Windows XP desktop portfolio built with React." };
+const description = "Development case study showing how Kaveesha Dilshan built an interactive Windows XP-inspired portfolio with React, reusable window components, centralized UI state, and responsive behavior.";
+export const metadata: Metadata = createMetadata({ title: "Windows XP Portfolio Case Study", description, path: "/projects/windows-xp-portfolio", image: "/mockup-windows-xp.png", imageAlt: "Windows XP-inspired interactive portfolio presentation", type: "article" });
 
 const project: DevelopmentProject = {
   eyebrow: "INTERACTIVE DEVELOPMENT CASE STUDY", title: "Windows XP", accent: "Portfolio Desktop", year: "2025", role: "Front-end Developer", scope: "UI engineering, state design, interaction", mockup: "/mockup-windows-xp.png", live: "https://windows-xp-portfolio-lime.vercel.app/", github: "https://github.com/Kaveesha23dil/Windows_Xp_Portfolio",
@@ -31,4 +34,4 @@ const project: DevelopmentProject = {
   outcome: "A distinctive portfolio experience that demonstrates component architecture, complex UI state, interaction design, and careful visual recreation through working software.",
 };
 
-export default function Page() { return <><DevelopmentCaseStudy project={project} /><Footer /></>; }
+export default function Page() { return <><JsonLd data={[{ "@context": "https://schema.org", "@type": "SoftwareApplication", name: "Windows XP Portfolio", description, url: absoluteUrl("/projects/windows-xp-portfolio"), image: absoluteUrl("/mockup-windows-xp.png"), applicationCategory: "WebApplication", operatingSystem: "Web browser", author: { "@id": `${siteConfig.url}/#person` }, codeRepository: project.github }, createProjectBreadcrumb("Windows XP Portfolio", "/projects/windows-xp-portfolio")]} /><DevelopmentCaseStudy project={project} /><Footer /></>; }

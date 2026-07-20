@@ -13,8 +13,9 @@ const stats = [
   { value: "18", label: "Global clients" },
 ];
 
-export default function About() {
+export default function About({ asPage = false }: { asPage?: boolean }) {
   const section = useRef<HTMLElement>(null);
+  const Heading = asPage ? "h1" : "h2";
 
   useLayoutEffect(() => {
     registerMotion();
@@ -52,13 +53,13 @@ export default function About() {
       <div className="about-layout">
         <div className="about-heading about-reveal">
           <p className="eyebrow"><Asterisk size={15} /> A LITTLE ABOUT ME</p>
-          <h2>I turn complex ideas into <em>simple, memorable</em> digital experiences.</h2>
+          <Heading>I turn complex ideas into <em>simple, memorable</em> digital experiences.</Heading>
         </div>
 
         <div className="about-story about-reveal">
           <p className="story-lead">I&apos;m Kaveesha Dilshan, a multidisciplinary designer and creative developer focused on the space where thoughtful design meets purposeful technology.</p>
           <p>I care about the details people feel but don&apos;t always notice—clear hierarchy, intuitive interaction, expressive motion, and a visual language that makes every product unmistakably its own.</p>
-          <a href="mailto:hello@windsun.dev" className="about-link">More about my journey <ArrowUpRight size={18} /></a>
+          <a href="/contact" className="about-link">Discuss a project <ArrowUpRight size={18} /></a>
         </div>
       </div>
 

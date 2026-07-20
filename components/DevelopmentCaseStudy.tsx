@@ -25,6 +25,7 @@ export type DevelopmentProject = {
   stack: string[];
   challenges: { title: string; detail: string }[];
   outcome: string;
+  disclaimer?: string;
 };
 
 export default function DevelopmentCaseStudy({ project }: { project: DevelopmentProject }) {
@@ -51,6 +52,7 @@ export default function DevelopmentCaseStudy({ project }: { project: Development
         <div className="case-kicker dev-hero-reveal"><span>{project.eyebrow}</span><span>{project.year}</span></div>
         <div className="dev-title-row"><h1 className="dev-hero-reveal">{project.title}<br /><em>{project.accent}</em></h1><p className="dev-hero-reveal">{project.summary}</p></div>
         <div className="case-meta dev-hero-reveal"><div><span>ROLE</span><strong>{project.role}</strong></div><div><span>SCOPE</span><strong>{project.scope}</strong></div><div><span>DELIVERABLE</span><strong>Production website</strong></div><a href={project.live} target="_blank" rel="noreferrer">View live site <ArrowUpRight size={17} /></a></div>
+        {project.disclaimer && <p className="case-disclaimer dev-hero-reveal">{project.disclaimer}</p>}
         <div className="dev-case-cover dev-hero-reveal"><Image src={project.mockup} alt={`${project.title} presentation mockup`} fill priority sizes="100vw" /></div>
       </section>
 

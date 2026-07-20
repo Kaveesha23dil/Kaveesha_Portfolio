@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowUp, ArrowUpRight } from "lucide-react";
+import Link from "next/link";
 import { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 import { motionMedia, registerMotion } from "@/components/motion";
@@ -14,7 +15,6 @@ const navigation = [
 ];
 
 const socials = [
-  { label: "LinkedIn", href: "https://www.linkedin.com" },
   { label: "Behance", href: "https://www.behance.net/kaveeshadilshan10" },
   { label: "Dribbble", href: "https://dribbble.com/Kavee23" },
   { label: "GitHub", href: "https://github.com/Kaveesha23dil" },
@@ -56,10 +56,10 @@ export default function Footer() {
 
       <div className="footer-main">
         <div className="footer-identity footer-reveal">
-          <a href="#" className="footer-logo" aria-label="Kaveesha Dilshan home">
+          <Link href="/" className="footer-logo" aria-label="Kaveesha Dilshan home">
             <span className="sun-mark"><span /></span>
             <span>KAVEESHA DILSHAN</span>
-          </a>
+          </Link>
           <p>Independent designer and creative developer crafting thoughtful digital experiences for ambitious brands.</p>
           <span className="footer-status"><i /> AVAILABLE FOR SELECT PROJECTS</span>
         </div>
