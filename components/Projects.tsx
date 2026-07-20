@@ -4,7 +4,7 @@ import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
 import { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { motionMedia, registerMotion } from "@/components/motion";
 
 const projects = [
   { number: "01", title: "Intrinsic Tech", category: "Website Redesign · UI/UX", year: "2026", image: "/mockup-intrinsic-tech.png", href: "/projects/intrinsic-tech", description: "A complete responsive redesign that makes a complex AI consultancy feel clear, credible, and ready for growth.", featured: true },
@@ -16,11 +16,22 @@ export default function Projects() {
   const section = useRef<HTMLElement>(null);
 
   useLayoutEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
+    registerMotion();
     const ctx = gsap.context(() => {
-      gsap.utils.toArray<HTMLElement>(".project-card").forEach((card) => {
-        gsap.from(card.querySelectorAll(".project-reveal"), { scrollTrigger: { trigger: card, start: "top 76%" }, y: 45, opacity: 0, duration: .85, stagger: .1, ease: "power3.out" });
-        gsap.fromTo(card.querySelector(".project-image img"), { scale: 1.12, yPercent: -3 }, { scale: 1.02, yPercent: 3, ease: "none", scrollTrigger: { trigger: card, start: "top bottom", end: "bottom top", scrub: 1 } });
+      const mm = gsap.matchMedia();
+      mm.add(motionMedia.desktop, () => {
+        gsap.utils.toArray<HTMLElement>(".project-card").forEach((card, index) => {
+          const image = card.querySelector(".project-image");
+          const media = card.querySelector(".project-image img");
+          gsap.from(card.querySelectorAll(".project-info > *"), { scrollTrigger: { trigger: card, start: "top 70%" }, x: index % 2 === 0 ? -36 : 36, opacity: 0, duration: .8, stagger: .08, ease: "power3.out" });
+          gsap.from(image, { clipPath: index % 2 === 0 ? "inset(0 100% 0 0)" : "inset(0 0 0 100%)", duration: 1.15, ease: "power4.inOut", scrollTrigger: { trigger: card, start: "top 78%" } });
+          gsap.fromTo(media, { scale: 1.1, yPercent: -3 }, { scale: 1.01, yPercent: 3, ease: "none", scrollTrigger: { trigger: card, start: "top bottom", end: "bottom top", scrub: 1 } });
+        });
+      });
+      mm.add(motionMedia.mobile, () => {
+        gsap.utils.toArray<HTMLElement>(".project-card").forEach((card) => {
+          gsap.from(card.querySelectorAll(".project-reveal"), { scrollTrigger: { trigger: card, start: "top 84%" }, y: 24, opacity: 0, duration: .65, stagger: .08, ease: "power2.out" });
+        });
       });
     }, section);
     return () => ctx.revert();

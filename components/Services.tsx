@@ -3,7 +3,7 @@
 import { ArrowUpRight, Asterisk, Braces, Layers3, PenTool, Sparkles } from "lucide-react";
 import { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { motionMedia, registerMotion } from "@/components/motion";
 
 const services = [
   {
@@ -40,7 +40,7 @@ export default function Services({ sectionNumber = "04" }: { sectionNumber?: str
   const section = useRef<HTMLElement>(null);
 
   useLayoutEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
+    registerMotion();
     const ctx = gsap.context(() => {
       gsap.from(".services-reveal", {
         scrollTrigger: { trigger: section.current, start: "top 72%" },
@@ -50,14 +50,13 @@ export default function Services({ sectionNumber = "04" }: { sectionNumber?: str
         stagger: 0.09,
         ease: "power3.out",
       });
-      gsap.from(".service-card", {
-        scrollTrigger: { trigger: ".services-grid", start: "top 78%" },
-        y: 48,
-        opacity: 0,
-        duration: 0.8,
-        stagger: 0.1,
-        ease: "power3.out",
+      const mm = gsap.matchMedia();
+      mm.add(motionMedia.desktop, () => {
+        gsap.from(".service-card", { scrollTrigger: { trigger: ".services-grid", start: "top 78%" }, clipPath: "inset(0 0 100% 0)", y: 34, duration: .9, stagger: .1, ease: "power4.out" });
+        gsap.from(".service-card-body > *,.service-tags", { scrollTrigger: { trigger: ".services-grid", start: "top 72%" }, y: 22, opacity: 0, duration: .55, stagger: .05, ease: "power2.out" });
+        gsap.to(".services-orbit", { rotate: 100, scrollTrigger: { trigger: section.current, start: "top bottom", end: "bottom top", scrub: 1.2 } });
       });
+      mm.add(motionMedia.mobile, () => gsap.from(".service-card", { scrollTrigger: { trigger: ".services-grid", start: "top 84%" }, y: 24, opacity: 0, duration: .6, stagger: .07, ease: "power2.out" }));
     }, section);
     return () => ctx.revert();
   }, []);

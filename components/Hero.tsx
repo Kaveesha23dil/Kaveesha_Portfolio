@@ -4,8 +4,7 @@ import Image from "next/image";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
-
-const INTRO_COMPLETE_EVENT = "portfolio:intro-complete";
+import { INTRO_COMPLETE_EVENT, INTRO_SESSION_KEY, motionMedia } from "@/components/motion";
 
 function SunMark({ small = false }: { small?: boolean }) {
   return (
@@ -22,20 +21,27 @@ export default function Hero() {
     const revealHero = () => {
       if (ctx) return;
       ctx = gsap.context(() => {
-      const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
-      tl.from(".hero-reveal", { y: 36, opacity: 0, duration: 0.8, stagger: 0.1 })
-        .from(".visual-card", { x: 55, opacity: 0, scale: 0.96, duration: 1 }, "-=0.85")
-        .from(".orbit-shape", { scale: 0, opacity: 0, duration: 0.8, stagger: 0.12 }, "-=0.8")
-        .from(".floating-note", { y: 25, opacity: 0, duration: 0.65 }, "-=0.4");
-
-      gsap.to(".sun-mark", { rotate: 360, duration: 18, ease: "none", repeat: -1 });
-      gsap.to(".lime-orb", { y: -14, x: 7, duration: 3.2, yoyo: true, repeat: -1, ease: "sine.inOut" });
-      gsap.to(".side-orb", { y: 18, duration: 4.2, yoyo: true, repeat: -1, ease: "sine.inOut" });
+        const mm = gsap.matchMedia();
+        mm.add(motionMedia.desktop, () => {
+          const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+          tl.from(".hero-reveal", { y: 36, opacity: 0, duration: 0.8, stagger: 0.1 })
+            .from(".visual-card", { clipPath: "inset(0 100% 0 0)", x: 45, duration: 1.15, ease: "power4.inOut" }, "-=0.8")
+            .from(".orbit-shape", { scale: 0.65, opacity: 0, duration: 0.8, stagger: 0.12 }, "-=0.8")
+            .from(".floating-note", { y: 25, opacity: 0, duration: 0.65 }, "-=0.4");
+          gsap.to(".lime-orb", { y: -14, x: 7, duration: 3.2, yoyo: true, repeat: -1, ease: "sine.inOut" });
+          gsap.to(".side-orb", { y: 18, duration: 4.2, yoyo: true, repeat: -1, ease: "sine.inOut" });
+          gsap.to(".copy-col", { yPercent: -9, opacity: 0.72, ease: "none", scrollTrigger: { trigger: root.current, start: "top top", end: "bottom top", scrub: 1 } });
+          gsap.to(".visual-col", { yPercent: -4, scale: 0.97, ease: "none", scrollTrigger: { trigger: root.current, start: "top top", end: "bottom top", scrub: 1 } });
+        });
+        mm.add(motionMedia.mobile, () => {
+          gsap.from(".hero-reveal,.visual-card,.floating-note", { y: 24, opacity: 0, duration: 0.65, stagger: 0.08, ease: "power2.out" });
+        });
+        gsap.to(".sun-mark", { rotate: 360, duration: 18, ease: "none", repeat: -1 });
       }, root);
     };
 
     window.addEventListener(INTRO_COMPLETE_EVENT, revealHero, { once: true });
-    if (sessionStorage.getItem("wind-sun-intro-seen")) requestAnimationFrame(revealHero);
+    if (sessionStorage.getItem(INTRO_SESSION_KEY)) requestAnimationFrame(revealHero);
 
     return () => {
       window.removeEventListener(INTRO_COMPLETE_EVENT, revealHero);

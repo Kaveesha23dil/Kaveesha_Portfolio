@@ -3,7 +3,7 @@
 import { ArrowUp, ArrowUpRight } from "lucide-react";
 import { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { motionMedia, registerMotion } from "@/components/motion";
 
 const navigation = [
   { label: "Home", href: "/" },
@@ -24,7 +24,7 @@ export default function Footer() {
   const footer = useRef<HTMLElement>(null);
 
   useLayoutEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
+    registerMotion();
     const ctx = gsap.context(() => {
       gsap.from(".footer-reveal", {
         scrollTrigger: { trigger: footer.current, start: "top 88%" },
@@ -40,6 +40,11 @@ export default function Footer() {
         duration: 1,
         stagger: 0.06,
         ease: "power4.out",
+      });
+      const mm = gsap.matchMedia();
+      mm.add(motionMedia.desktop, () => {
+        gsap.fromTo(".footer-glow", { scale: .65, opacity: 0 }, { scale: 1, opacity: 1, ease: "none", scrollTrigger: { trigger: footer.current, start: "top bottom", end: "bottom bottom", scrub: 1 } });
+        gsap.from(".footer-column a", { x: -12, opacity: 0, duration: .4, stagger: .04, ease: "power2.out", scrollTrigger: { trigger: ".footer-main", start: "top 82%" } });
       });
     }, footer);
     return () => ctx.revert();
