@@ -25,25 +25,26 @@ export default function Navbar() {
     const element = header.current;
     if (!element) return;
     let revealed = false;
-    let lastY = window.scrollY;
     const reveal = () => {
       if (revealed) return;
       revealed = true;
-      gsap.fromTo(element, { y: -24, opacity: 0, filter: "blur(8px)" }, { y: 0, opacity: 1, filter: "blur(0px)", duration: .75, ease: "power3.out", clearProps: "filter" });
+      gsap.fromTo(element, { y: -24, opacity: 0, filter: "blur(8px)" }, { y: 0, opacity: 1, filter: "blur(0px)", duration: .75, ease: "power3.out", clearProps: "transform,opacity,filter" });
     };
     const onScroll = () => {
       const currentY = window.scrollY;
       element.classList.toggle("is-scrolled", currentY > 30);
-      gsap.to(element, { yPercent: currentY > lastY && currentY > 180 ? -110 : 0, duration: .35, ease: "power2.out", overwrite: true });
-      lastY = currentY;
     };
+    const revealFallback = window.setTimeout(reveal, 3200);
     window.addEventListener(INTRO_COMPLETE_EVENT, reveal, { once: true });
     window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
     if (pathname !== "/" || sessionStorage.getItem(INTRO_SESSION_KEY)) requestAnimationFrame(reveal);
     return () => {
       window.removeEventListener(INTRO_COMPLETE_EVENT, reveal);
       window.removeEventListener("scroll", onScroll);
+      window.clearTimeout(revealFallback);
       gsap.killTweensOf(element);
+      gsap.set(element, { clearProps: "transform,opacity,filter" });
     };
   }, [pathname]);
 
