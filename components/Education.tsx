@@ -3,7 +3,7 @@
 import { Asterisk, ArrowUpRight, BookOpen } from "lucide-react";
 import { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { motionMedia, registerMotion } from "@/components/motion";
 
 const education = [
   {
@@ -30,7 +30,7 @@ export default function Education() {
   const section = useRef<HTMLElement>(null);
 
   useLayoutEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
+    registerMotion();
     const ctx = gsap.context(() => {
       gsap.from(".education-reveal", {
         scrollTrigger: { trigger: section.current, start: "top 78%" },
@@ -39,6 +39,11 @@ export default function Education() {
         duration: .85,
         stagger: .09,
         ease: "power3.out",
+      });
+      const mm = gsap.matchMedia();
+      mm.add(motionMedia.desktop, () => {
+        gsap.from(".education-item", { x: (index) => index % 2 === 0 ? -34 : 34, opacity: 0, duration: .75, stagger: .1, ease: "power3.out", scrollTrigger: { trigger: ".education-list", start: "top 78%" } });
+        gsap.fromTo(".education-list", { "--education-progress": "0%" }, { "--education-progress": "100%", ease: "none", scrollTrigger: { trigger: ".education-list", start: "top 75%", end: "bottom 45%", scrub: 1 } });
       });
     }, section);
     return () => ctx.revert();

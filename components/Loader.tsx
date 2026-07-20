@@ -2,9 +2,7 @@
 
 import { useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap";
-
-const SESSION_KEY = "wind-sun-intro-seen";
-const INTRO_COMPLETE_EVENT = "portfolio:intro-complete";
+import { INTRO_COMPLETE_EVENT, INTRO_SESSION_KEY } from "@/components/motion";
 
 export default function Loader() {
   const loader = useRef<HTMLDivElement>(null);
@@ -13,7 +11,7 @@ export default function Loader() {
   const [visible, setVisible] = useState(true);
 
   useLayoutEffect(() => {
-    if (sessionStorage.getItem(SESSION_KEY)) {
+    if (sessionStorage.getItem(INTRO_SESSION_KEY)) {
       queueMicrotask(() => {
         setVisible(false);
         window.dispatchEvent(new Event(INTRO_COMPLETE_EVENT));
@@ -40,7 +38,7 @@ export default function Loader() {
       const timeline = gsap.timeline({
         onComplete: () => {
           completed = true;
-          sessionStorage.setItem(SESSION_KEY, "true");
+          sessionStorage.setItem(INTRO_SESSION_KEY, "true");
           document.body.classList.remove("is-loading");
           setVisible(false);
           window.dispatchEvent(new Event(INTRO_COMPLETE_EVENT));
@@ -76,7 +74,7 @@ export default function Loader() {
     return () => {
       ctx.revert();
       document.body.classList.remove("is-loading");
-      if (!completed) sessionStorage.removeItem(SESSION_KEY);
+      if (!completed) sessionStorage.removeItem(INTRO_SESSION_KEY);
     };
   }, []);
 

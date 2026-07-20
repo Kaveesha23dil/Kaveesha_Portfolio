@@ -3,7 +3,7 @@
 import { ArrowUpRight, Asterisk, Quote, Star } from "lucide-react";
 import { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { motionMedia, registerMotion } from "@/components/motion";
 
 const testimonials = [
   {
@@ -33,7 +33,7 @@ export default function Testimonials() {
   const section = useRef<HTMLElement>(null);
 
   useLayoutEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
+    registerMotion();
     const ctx = gsap.context(() => {
       gsap.from(".testimonials-reveal", {
         scrollTrigger: { trigger: section.current, start: "top 72%" },
@@ -43,18 +43,13 @@ export default function Testimonials() {
         stagger: 0.1,
         ease: "power3.out",
       });
-      gsap.from(".testimonial-card", {
-        scrollTrigger: { trigger: ".testimonials-grid", start: "top 78%" },
-        y: 50,
-        opacity: 0,
-        duration: 0.8,
-        stagger: 0.12,
-        ease: "power3.out",
+      const mm = gsap.matchMedia();
+      mm.add(motionMedia.desktop, () => {
+        gsap.from(".testimonial-card", { scrollTrigger: { trigger: ".testimonials-grid", start: "top 78%" }, y: 50, scale: .96, opacity: 0, duration: .85, stagger: .12, ease: "power3.out" });
+        gsap.from(".testimonial-card blockquote", { scrollTrigger: { trigger: ".testimonials-grid", start: "top 70%" }, clipPath: "inset(0 0 100% 0)", y: 18, duration: .8, stagger: .1, ease: "power3.out" });
+        gsap.to(".testimonial-halo", { rotate: 90, scrollTrigger: { trigger: section.current, start: "top bottom", end: "bottom top", scrub: 1.2 } });
       });
-      gsap.to(".testimonial-halo", {
-        rotate: 90,
-        scrollTrigger: { trigger: section.current, start: "top bottom", end: "bottom top", scrub: 1.2 },
-      });
+      mm.add(motionMedia.mobile, () => gsap.from(".testimonial-card", { scrollTrigger: { trigger: ".testimonials-grid", start: "top 84%" }, y: 24, opacity: 0, duration: .6, stagger: .08, ease: "power2.out" }));
     }, section);
     return () => ctx.revert();
   }, []);

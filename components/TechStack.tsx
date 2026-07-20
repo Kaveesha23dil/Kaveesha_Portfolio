@@ -3,7 +3,7 @@
 import { Asterisk, ArrowUpRight, Scissors } from "lucide-react";
 import { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { motionMedia, registerMotion } from "@/components/motion";
 import { SiFigma, SiNextdotjs, SiReact, SiTypescript, SiTailwindcss, SiGreensock, SiGit, SiMongodb, SiGo, SiFlutter, SiKotlin, SiHtml5, SiCss, SiJavascript, SiWordpress } from "react-icons/si";
 import { TbBrandAdobePhotoshop, TbBrandAdobeAfterEffect, TbBrandAws } from "react-icons/tb";
 
@@ -33,7 +33,7 @@ export default function TechStack() {
   const section = useRef<HTMLElement>(null);
 
   useLayoutEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
+    registerMotion();
     const ctx = gsap.context(() => {
       gsap.from(".stack-reveal", {
         scrollTrigger: { trigger: section.current, start: "top 78%" },
@@ -42,6 +42,10 @@ export default function TechStack() {
         duration: .8,
         stagger: .07,
         ease: "power3.out",
+      });
+      const mm = gsap.matchMedia();
+      mm.add(motionMedia.desktop, () => {
+        gsap.from(".tech-card", { scale: .94, transformOrigin: "center bottom", duration: .7, stagger: { each: .045, from: "start" }, ease: "power3.out", scrollTrigger: { trigger: ".tech-stack-grid", start: "top 80%" } });
       });
     }, section);
     return () => ctx.revert();

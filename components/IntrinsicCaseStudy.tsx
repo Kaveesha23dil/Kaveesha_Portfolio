@@ -4,7 +4,7 @@ import Image from "next/image";
 import { ArrowLeft, ArrowUpRight, Asterisk, Check, MoveDownRight } from "lucide-react";
 import { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { motionMedia, registerMotion } from "@/components/motion";
 
 const outcomes = ["Clearer service positioning", "Responsive three-page experience", "Reusable visual design system", "Stronger conversion pathways"];
 const principles = [
@@ -23,11 +23,19 @@ export default function IntrinsicCaseStudy() {
   const root = useRef<HTMLElement>(null);
 
   useLayoutEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
+    registerMotion();
     const ctx = gsap.context(() => {
       gsap.from(".case-hero-reveal", { y: 45, opacity: 0, duration: .9, stagger: .1, ease: "power3.out" });
       gsap.utils.toArray<HTMLElement>(".case-reveal").forEach((item) => {
         gsap.from(item, { scrollTrigger: { trigger: item, start: "top 84%" }, y: 50, opacity: 0, duration: .85, ease: "power3.out" });
+      });
+      const mm = gsap.matchMedia();
+      mm.add(motionMedia.desktop, () => {
+        gsap.from(".case-cover", { clipPath: "inset(0 0 100% 0)", duration: 1.25, ease: "power4.inOut", delay: .25 });
+        gsap.fromTo(".case-cover img", { scale: 1.07 }, { scale: 1, yPercent: 3, ease: "none", scrollTrigger: { trigger: ".case-cover", start: "top bottom", end: "bottom top", scrub: 1 } });
+        gsap.utils.toArray<HTMLElement>(".case-screen,.case-showcase-split figure,.case-foundations figure").forEach((media) => {
+          gsap.from(media, { clipPath: "inset(0 0 100% 0)", duration: 1, ease: "power4.out", scrollTrigger: { trigger: media, start: "top 82%" } });
+        });
       });
     }, root);
     return () => ctx.revert();

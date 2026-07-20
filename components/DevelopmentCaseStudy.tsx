@@ -4,7 +4,7 @@ import Image from "next/image";
 import { ArrowLeft, ArrowUpRight, Asterisk, Check, Code2 } from "lucide-react";
 import { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { motionMedia, registerMotion } from "@/components/motion";
 
 export type DevelopmentProject = {
   eyebrow: string;
@@ -30,10 +30,16 @@ export type DevelopmentProject = {
 export default function DevelopmentCaseStudy({ project }: { project: DevelopmentProject }) {
   const root = useRef<HTMLElement>(null);
   useLayoutEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
+    registerMotion();
     const ctx = gsap.context(() => {
       gsap.from(".dev-hero-reveal", { y: 45, opacity: 0, duration: .9, stagger: .1, ease: "power3.out" });
       gsap.utils.toArray<HTMLElement>(".dev-reveal").forEach((item) => gsap.from(item, { scrollTrigger: { trigger: item, start: "top 84%" }, y: 42, opacity: 0, duration: .8, ease: "power3.out" }));
+      const mm = gsap.matchMedia();
+      mm.add(motionMedia.desktop, () => {
+        gsap.from(".dev-case-cover", { clipPath: "inset(0 0 100% 0)", duration: 1.25, ease: "power4.inOut", delay: .25 });
+        gsap.fromTo(".dev-case-cover img", { scale: 1.08 }, { scale: 1, yPercent: 4, ease: "none", scrollTrigger: { trigger: ".dev-case-cover", start: "top bottom", end: "bottom top", scrub: 1 } });
+        gsap.from(".dev-info-card", { scale: .95, duration: .7, stagger: .08, ease: "power3.out", scrollTrigger: { trigger: ".dev-card-grid", start: "top 80%" } });
+      });
     }, root);
     return () => ctx.revert();
   }, []);

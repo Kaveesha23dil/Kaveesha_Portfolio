@@ -6,6 +6,7 @@ import { SiCoursera, SiGoogle, SiMeta } from "react-icons/si";
 import { TbBrandAws } from "react-icons/tb";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { registerMotion } from "@/components/motion";
 
 const certificates = [
   { title: "Google UX Design Professional Certificate", issuer: "Google", year: "2026", file: "Coursera S97Q9Q2JAQH7 (1).pdf", icon: SiGoogle, featured: true },
@@ -51,12 +52,23 @@ export default function Certificates() {
   const visible = showAll ? certificates : certificates.filter((item) => item.featured);
 
   useLayoutEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
+    registerMotion();
     const ctx = gsap.context(() => {
       gsap.from(".certificate-reveal", { scrollTrigger: { trigger: section.current, start: "top 78%" }, y: 42, opacity: 0, duration: .8, stagger: .08, ease: "power3.out" });
     }, section);
     return () => ctx.revert();
   }, []);
+
+  useLayoutEffect(() => {
+    if (!showAll || !section.current) return;
+    const cards = section.current.querySelectorAll(".certificate-card");
+    const expandedCards = Array.from(cards).slice(6);
+    const animation = gsap.from(expandedCards, { y: 24, opacity: 0, duration: .5, stagger: .025, ease: "power2.out", clearProps: "transform,opacity" });
+    ScrollTrigger.refresh();
+    return () => {
+      animation.kill();
+    };
+  }, [showAll]);
 
   return (
     <section ref={section} data-scroll-section className="certificates-section">

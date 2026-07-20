@@ -63,6 +63,14 @@ export default function Process({ sectionNumber = "05" }: { sectionNumber?: stri
         ease: "none",
         scrollTrigger: { trigger: ".process-steps", start: "top 78%", end: "bottom 72%", scrub: 1 },
       });
+      gsap.utils.toArray<HTMLElement>(".process-step").forEach((step) => {
+        ScrollTrigger.create({
+          trigger: step,
+          start: "top 58%",
+          end: "bottom 42%",
+          toggleClass: { targets: step, className: "is-active" },
+        });
+      });
     }, section);
     return () => ctx.revert();
   }, []);

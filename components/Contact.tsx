@@ -3,13 +3,13 @@
 import { ArrowUpRight, Asterisk, Check, Send } from "lucide-react";
 import { FormEvent, useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { motionMedia, registerMotion } from "@/components/motion";
 
 export default function Contact() {
   const section = useRef<HTMLElement>(null);
 
   useLayoutEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
+    registerMotion();
     const ctx = gsap.context(() => {
       gsap.from(".contact-reveal", {
         scrollTrigger: { trigger: section.current, start: "top 72%" },
@@ -19,7 +19,12 @@ export default function Contact() {
         stagger: 0.1,
         ease: "power3.out",
       });
-      gsap.to(".contact-orbit", { rotate: 130, duration: 20, repeat: -1, ease: "none" });
+      const mm = gsap.matchMedia();
+      mm.add(motionMedia.desktop, () => {
+        gsap.from(".contact-field", { scrollTrigger: { trigger: ".contact-form", start: "top 78%" }, x: -28, opacity: 0, duration: .65, stagger: .08, ease: "power3.out" });
+        gsap.from(".contact-detail-block", { scrollTrigger: { trigger: ".contact-details", start: "top 80%" }, x: 28, opacity: 0, duration: .65, stagger: .1, ease: "power3.out" });
+        gsap.to(".contact-orbit", { rotate: 130, ease: "none", scrollTrigger: { trigger: section.current, start: "top bottom", end: "bottom top", scrub: 1.2 } });
+      });
     }, section);
     return () => ctx.revert();
   }, []);

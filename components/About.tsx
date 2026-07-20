@@ -4,7 +4,7 @@ import Image from "next/image";
 import { ArrowUpRight, Asterisk, Circle } from "lucide-react";
 import { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { motionMedia, registerMotion } from "@/components/motion";
 
 const skills = ["UI/UX Design", "Creative Development", "Motion", "Brand Systems"];
 const stats = [
@@ -17,27 +17,25 @@ export default function About() {
   const section = useRef<HTMLElement>(null);
 
   useLayoutEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
+    registerMotion();
     const ctx = gsap.context(() => {
-      gsap.from(".about-reveal", {
-        scrollTrigger: { trigger: section.current, start: "top 72%" },
-        y: 48,
-        opacity: 0,
-        duration: 0.9,
-        stagger: 0.1,
-        ease: "power3.out",
+      const mm = gsap.matchMedia();
+      mm.add(motionMedia.desktop, () => {
+        gsap.from(".about-reveal", { scrollTrigger: { trigger: section.current, start: "top 72%" }, y: 48, opacity: 0, duration: .9, stagger: .1, ease: "power3.out" });
+        gsap.from(".portrait-frame", { clipPath: "inset(0 0 100% 0)", duration: 1.2, ease: "power4.inOut", scrollTrigger: { trigger: ".about-portrait", start: "top 78%" } });
+        gsap.fromTo(".portrait-frame img", { scale: 1.08 }, { scale: 1, yPercent: 4, ease: "none", scrollTrigger: { trigger: ".about-portrait", start: "top bottom", end: "bottom top", scrub: 1 } });
+        gsap.to(".about-ring", { scrollTrigger: { trigger: section.current, start: "top bottom", end: "bottom top", scrub: 1.2 }, rotate: 110 });
       });
-      gsap.from(".stat-item", {
-        scrollTrigger: { trigger: ".stats-row", start: "top 86%" },
-        y: 30,
-        opacity: 0,
-        duration: 0.65,
-        stagger: 0.12,
-        ease: "power2.out",
+      mm.add(motionMedia.mobile, () => {
+        gsap.from(".about-reveal,.stat-item", { scrollTrigger: { trigger: section.current, start: "top 84%" }, y: 24, opacity: 0, duration: .6, stagger: .07, ease: "power2.out" });
       });
-      gsap.to(".about-ring", {
-        scrollTrigger: { trigger: section.current, start: "top bottom", end: "bottom top", scrub: 1.2 },
-        rotate: 110,
+      gsap.utils.toArray<HTMLElement>(".stat-item strong").forEach((element) => {
+        const target = Number(element.dataset.value);
+        const counter = { value: 0 };
+        gsap.to(counter, { value: target, duration: 1.25, ease: "power2.out", scrollTrigger: { trigger: element, start: "top 90%", once: true }, onUpdate: () => {
+          const value = Math.round(counter.value);
+          element.textContent = target === 5 ? `${String(value).padStart(2, "0")}+` : String(value);
+        } });
       });
     }, section);
     return () => ctx.revert();
@@ -96,7 +94,7 @@ export default function About() {
       <div className="stats-row">
         {stats.map((stat) => (
           <div className="stat-item" key={stat.label}>
-            <strong>{stat.value}</strong>
+            <strong data-value={Number.parseInt(stat.value, 10)}>{stat.value}</strong>
             <span>{stat.label}</span>
           </div>
         ))}

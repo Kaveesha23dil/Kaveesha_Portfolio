@@ -5,6 +5,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
+import { refreshMotionWhenReady } from "@/components/motion";
 
 const sectionNames: Record<string, string> = {
   home: "HOME",
@@ -95,6 +96,7 @@ export default function MotionController() {
     });
 
     ScrollTrigger.refresh();
+    const stopRefreshListeners = refreshMotionWhenReady();
     return () => {
       ctx.revert();
       observers.forEach((observer) => observer.kill());
@@ -102,6 +104,7 @@ export default function MotionController() {
       cleanupMagnetic.forEach((cleanup) => cleanup());
       gsap.ticker.remove(ticker);
       lenis.destroy();
+      stopRefreshListeners();
     };
   }, [pathname]);
 
