@@ -1,12 +1,16 @@
 import type { Metadata } from "next";
 import DevelopmentCaseStudy, { DevelopmentProject } from "@/components/DevelopmentCaseStudy";
 import Footer from "@/components/Footer";
+import JsonLd from "@/components/JsonLd";
+import { absoluteUrl, createMetadata, createProjectBreadcrumb, siteConfig } from "@/lib/site";
 
-export const metadata: Metadata = { title: "GTA VI Interactive Experience — Kaveesha Dilshan", description: "Creative-development case study for a cinematic React and GSAP GTA VI landing page." };
+const description = "A fan-made creative-development case study showing how Kaveesha Dilshan built a cinematic GTA VI landing experience with React, GSAP ScrollTrigger, scrubbed video, and responsive motion.";
+export const metadata: Metadata = createMetadata({ title: "GTA VI Interactive Experience Case Study", description, path: "/projects/gtavi-experience", image: "/mockup-gtavi.png", imageAlt: "GTA VI interactive landing experience presentation", type: "article" });
 
 const project: DevelopmentProject = {
   eyebrow: "CREATIVE DEVELOPMENT CASE STUDY", title: "GTA VI", accent: "Interactive Experience", year: "2025", role: "Front-end Developer", scope: "Creative development, motion, responsive UI", mockup: "/mockup-gtavi.png", live: "https://gtavi-landingpage.vercel.app/", github: "https://github.com/Kaveesha23dil/GTAVI_Landingpage",
   summary: "A cinematic fan-made landing experience that turns scrolling into a directed story through masks, pinned scenes, scrubbed video, and character-led transitions.",
+  disclaimer: "Independent fan-made portfolio project. Grand Theft Auto, GTA VI, Rockstar Games, and all related artwork and trademarks belong to their respective owners. This project is not affiliated with or endorsed by Rockstar Games or Take-Two Interactive.",
   challenge: "Make a long promotional page feel like an interactive trailer—not a collection of static sections.",
   solution: "I built the experience as a sequence of React sections controlled by GSAP ScrollTrigger timelines. Scrolling reveals the world through expanding masks, advances video playback, transitions between scenes, and moves layered character artwork at different speeds.",
   contributions: [
@@ -31,4 +35,4 @@ const project: DevelopmentProject = {
   outcome: "A responsive, production-deployed experience that demonstrates creative front-end development, animation direction, and scroll-based storytelling.",
 };
 
-export default function Page() { return <><DevelopmentCaseStudy project={project} /><Footer /></>; }
+export default function Page() { return <><JsonLd data={[{ "@context": "https://schema.org", "@type": "CreativeWork", name: "GTA VI Interactive Experience", description, url: absoluteUrl("/projects/gtavi-experience"), image: absoluteUrl("/mockup-gtavi.png"), creator: { "@id": `${siteConfig.url}/#person` }, keywords: ["React", "GSAP", "ScrollTrigger", "creative development"], isBasedOn: "Grand Theft Auto VI" }, createProjectBreadcrumb("GTA VI Interactive Experience", "/projects/gtavi-experience")]} /><DevelopmentCaseStudy project={project} /><Footer /></>; }

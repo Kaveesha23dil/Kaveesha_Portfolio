@@ -19,8 +19,9 @@ const projectTypes = [
   { id: "motion", label: "Motion Design", description: "Cinematic interactions, scroll storytelling, and expressive digital movement." },
 ] as const;
 
-export default function Projects({ categorized = false }: { categorized?: boolean }) {
+export default function Projects({ categorized = false, asPage = false }: { categorized?: boolean; asPage?: boolean }) {
   const section = useRef<HTMLElement>(null);
+  const Heading = asPage ? "h1" : "h2";
   const [activeType, setActiveType] = useState<(typeof projectTypes)[number]["id"]>("all");
   const visibleProjects = categorized && activeType !== "all" ? projects.filter((project) => project.type === activeType) : projects;
 
@@ -50,7 +51,7 @@ export default function Projects({ categorized = false }: { categorized?: boolea
     <section ref={section} id="projects" data-scroll-section className="projects-section">
       <div className="projects-header">
         <div><span>03 / SELECTED WORK</span><span className="project-count">(03 PROJECTS)</span></div>
-        <h2>Selected work that turns<br />ideas into <em>impact.</em></h2>
+        <Heading>Selected work that turns<br />ideas into <em>impact.</em></Heading>
         <p>A collection of digital products shaped through strategy, design, and thoughtful technology.</p>
       </div>
       {categorized && <div className="project-categories" aria-label="Project categories">

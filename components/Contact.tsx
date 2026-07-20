@@ -5,8 +5,9 @@ import { FormEvent, useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 import { motionMedia, registerMotion } from "@/components/motion";
 
-export default function Contact() {
+export default function Contact({ asPage = false }: { asPage?: boolean }) {
   const section = useRef<HTMLElement>(null);
+  const Heading = asPage ? "h1" : "h2";
 
   useLayoutEffect(() => {
     registerMotion();
@@ -50,7 +51,7 @@ export default function Contact() {
       <div className="contact-intro">
         <div className="contact-heading contact-reveal">
           <p className="eyebrow"><Asterisk size={15} /> START A CONVERSATION</p>
-          <h2>Have an idea?<br /><em>Let&apos;s make it real.</em></h2>
+          <Heading>Have an idea?<br /><em>Let&apos;s make it real.</em></Heading>
         </div>
         <div className="contact-direct contact-reveal">
           <span>PREFER EMAIL?</span>
