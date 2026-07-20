@@ -2,18 +2,27 @@
 
 import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
-import { useLayoutEffect, useRef } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { motionMedia, registerMotion } from "@/components/motion";
 
 const projects = [
-  { number: "01", title: "Intrinsic Tech", category: "Website Redesign · UI/UX", year: "2026", image: "/mockup-intrinsic-tech.png", href: "/projects/intrinsic-tech", description: "A complete responsive redesign that makes a complex AI consultancy feel clear, credible, and ready for growth.", featured: true },
-  { number: "02", title: "GTA VI Experience", category: "Creative Development · Motion", year: "2025", image: "/mockup-gtavi.png", href: "/projects/gtavi-experience", live: "https://gtavi-landingpage.vercel.app/", github: "https://github.com/Kaveesha23dil/GTAVI_Landingpage", description: "A cinematic, responsive GTA VI landing page with GSAP-powered storytelling, character sequences, and immersive video transitions." },
-  { number: "03", title: "Windows XP Portfolio", category: "Interactive Development · React", year: "2025", image: "/mockup-windows-xp.png", href: "/projects/windows-xp-portfolio", live: "https://windows-xp-portfolio-lime.vercel.app/", github: "https://github.com/Kaveesha23dil/Windows_Xp_Portfolio", description: "A nostalgic, fully interactive portfolio desktop with authentic XP windows, Start menu, taskbar, command prompt, Paint, Notepad, and project explorer." },
+  { number: "01", type: "uiux", title: "Intrinsic Tech", category: "Website Redesign · UI/UX", year: "2026", image: "/mockup-intrinsic-tech.png", href: "/projects/intrinsic-tech", description: "A complete responsive redesign that makes a complex AI consultancy feel clear, credible, and ready for growth.", featured: true },
+  { number: "02", type: "development", title: "GTA VI Experience", category: "Creative Development · GSAP", year: "2025", image: "/mockup-gtavi.png", href: "/projects/gtavi-experience", live: "https://gtavi-landingpage.vercel.app/", github: "https://github.com/Kaveesha23dil/GTAVI_Landingpage", description: "A cinematic responsive website built with GSAP-powered scroll choreography, character sequences, masks, and immersive video transitions." },
+  { number: "03", type: "development", title: "Windows XP Portfolio", category: "Development · React", year: "2025", image: "/mockup-windows-xp.png", href: "/projects/windows-xp-portfolio", live: "https://windows-xp-portfolio-lime.vercel.app/", github: "https://github.com/Kaveesha23dil/Windows_Xp_Portfolio", description: "A nostalgic, fully interactive portfolio desktop with authentic XP windows, Start menu, taskbar, command prompt, Paint, Notepad, and project explorer." },
 ];
 
-export default function Projects() {
+const projectTypes = [
+  { id: "all", label: "All work", description: "A complete view of selected design, development, and motion work." },
+  { id: "uiux", label: "UI/UX", description: "Research-led interfaces, product thinking, and responsive design systems." },
+  { id: "development", label: "Development", description: "Production-ready websites and interactive applications built with modern tools." },
+  { id: "motion", label: "Motion Design", description: "Cinematic interactions, scroll storytelling, and expressive digital movement." },
+] as const;
+
+export default function Projects({ categorized = false }: { categorized?: boolean }) {
   const section = useRef<HTMLElement>(null);
+  const [activeType, setActiveType] = useState<(typeof projectTypes)[number]["id"]>("all");
+  const visibleProjects = categorized && activeType !== "all" ? projects.filter((project) => project.type === activeType) : projects;
 
   useLayoutEffect(() => {
     registerMotion();
@@ -35,7 +44,7 @@ export default function Projects() {
       });
     }, section);
     return () => ctx.revert();
-  }, []);
+  }, [activeType, categorized]);
 
   return (
     <section ref={section} id="projects" data-scroll-section className="projects-section">
@@ -44,8 +53,17 @@ export default function Projects() {
         <h2>Selected work that turns<br />ideas into <em>impact.</em></h2>
         <p>A collection of digital products shaped through strategy, design, and thoughtful technology.</p>
       </div>
-      <div className="projects-list">
-        {projects.map((project) => (
+      {categorized && <div className="project-categories" aria-label="Project categories">
+        <div className="project-category-intro">
+          <span>EXPLORE BY DISCIPLINE</span>
+          <p>{projectTypes.find((type) => type.id === activeType)?.description}</p>
+        </div>
+        <div className="project-category-tabs" role="group" aria-label="Filter projects by discipline">
+          {projectTypes.map((type) => <button type="button" className={activeType === type.id ? "is-active" : ""} aria-pressed={activeType === type.id} onClick={() => setActiveType(type.id)} key={type.id}><span>{type.label}</span><small>{type.id === "all" ? projects.length : projects.filter((project) => project.type === type.id).length}</small></button>)}
+        </div>
+      </div>}
+      <div className="projects-list" aria-live="polite">
+        {visibleProjects.map((project) => (
           <article className="project-card" key={project.title}>
             <a href={project.href} target={project.href.startsWith("http") ? "_blank" : undefined} rel={project.href.startsWith("http") ? "noreferrer" : undefined} className="project-image project-reveal" aria-label={`View ${project.title} project`}>
               <Image src={project.image} alt={`${project.title} project presentation`} fill sizes="(max-width: 900px) 94vw, 58vw" />
@@ -58,6 +76,12 @@ export default function Projects() {
             </div>
           </article>
         ))}
+        {categorized && visibleProjects.length === 0 && <div className="projects-empty-state">
+          <span>03 / MOTION DESIGN</span>
+          <h3>Motion work is<br /><em>coming soon.</em></h3>
+          <p>Dedicated motion design projects have not been published yet. This space is ready for title sequences, animated brand systems, product motion, and interaction studies.</p>
+          <a href="mailto:hello@windsun.dev?subject=Motion%20design%20project">Discuss a motion project <ArrowUpRight size={17} /></a>
+        </div>}
       </div>
       <a href="/contact" className="all-work-link">Start a project <span><ArrowUpRight size={20} /></span></a>
     </section>
