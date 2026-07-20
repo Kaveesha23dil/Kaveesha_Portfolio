@@ -1,10 +1,11 @@
 "use client";
 
 import Image from "next/image";
-import { ArrowRight, Cloud, Sparkles } from "lucide-react";
+import { ArrowRight, Sparkles } from "lucide-react";
 import { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
-import Loader from "@/components/Loader";
+
+const INTRO_COMPLETE_EVENT = "portfolio:intro-complete";
 
 function SunMark({ small = false }: { small?: boolean }) {
   return (
@@ -17,7 +18,10 @@ function SunMark({ small = false }: { small?: boolean }) {
 export default function Hero() {
   const root = useRef<HTMLElement>(null);
   useLayoutEffect(() => {
-    const ctx = gsap.context(() => {
+    let ctx: gsap.Context | undefined;
+    const revealHero = () => {
+      if (ctx) return;
+      ctx = gsap.context(() => {
       const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
       tl.from(".hero-reveal", { y: 36, opacity: 0, duration: 0.8, stagger: 0.1 })
         .from(".visual-card", { x: 55, opacity: 0, scale: 0.96, duration: 1 }, "-=0.85")
@@ -27,13 +31,20 @@ export default function Hero() {
       gsap.to(".sun-mark", { rotate: 360, duration: 18, ease: "none", repeat: -1 });
       gsap.to(".lime-orb", { y: -14, x: 7, duration: 3.2, yoyo: true, repeat: -1, ease: "sine.inOut" });
       gsap.to(".side-orb", { y: 18, duration: 4.2, yoyo: true, repeat: -1, ease: "sine.inOut" });
-    }, root);
-    return () => ctx.revert();
+      }, root);
+    };
+
+    window.addEventListener(INTRO_COMPLETE_EVENT, revealHero, { once: true });
+    if (sessionStorage.getItem("wind-sun-intro-seen")) requestAnimationFrame(revealHero);
+
+    return () => {
+      window.removeEventListener(INTRO_COMPLETE_EVENT, revealHero);
+      ctx?.revert();
+    };
   }, []);
 
   return (
     <main ref={root} id="home" data-scroll-section className="hero-shell">
-      <Loader />
       <div className="grain" />
       <div className="side-orb side-orb--left" />
       <div className="side-orb side-orb--right" />
@@ -46,12 +57,6 @@ export default function Hero() {
           <div className="hero-reveal actions">
             <a href="/projects" className="primary-btn">View Projects <ArrowRight size={17} /></a>
             <a href="mailto:hello@windsun.dev" className="secondary-btn">Hire Me <ArrowRight size={17} /></a>
-          </div>
-          <div className="hero-reveal trust">
-            <p>Trusted by forward-thinking brands</p>
-            <div className="brands">
-              <span><i className="loop" />Looply</span><span><i className="coin">P</i>Paywave</span><span><i className="coin">S</i>Stackly</span><span><i className="coin">N</i>Nimble</span><span><Cloud size={18} />Cloudix</span>
-            </div>
           </div>
         </div>
 

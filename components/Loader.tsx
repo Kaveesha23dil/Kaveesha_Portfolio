@@ -4,27 +4,46 @@ import { useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap";
 
 const SESSION_KEY = "wind-sun-intro-seen";
+const INTRO_COMPLETE_EVENT = "portfolio:intro-complete";
 
 export default function Loader() {
   const loader = useRef<HTMLDivElement>(null);
+  const limeLayer = useRef<HTMLDivElement>(null);
   const number = useRef<HTMLSpanElement>(null);
   const [visible, setVisible] = useState(true);
 
   useLayoutEffect(() => {
     if (sessionStorage.getItem(SESSION_KEY)) {
-      queueMicrotask(() => setVisible(false));
+      queueMicrotask(() => {
+        setVisible(false);
+        window.dispatchEvent(new Event(INTRO_COMPLETE_EVENT));
+      });
+      return;
+    }
+
+    const loaderElement = loader.current;
+    const limeLayerElement = limeLayer.current;
+
+    if (!loaderElement || !limeLayerElement) {
+      queueMicrotask(() => {
+        setVisible(false);
+        window.dispatchEvent(new Event(INTRO_COMPLETE_EVENT));
+      });
       return;
     }
 
     document.body.classList.add("is-loading");
     const progress = { value: 0 };
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let completed = false;
     const ctx = gsap.context(() => {
       const timeline = gsap.timeline({
         onComplete: () => {
+          completed = true;
           sessionStorage.setItem(SESSION_KEY, "true");
           document.body.classList.remove("is-loading");
           setVisible(false);
+          window.dispatchEvent(new Event(INTRO_COMPLETE_EVENT));
         },
       });
 
@@ -46,17 +65,18 @@ export default function Loader() {
         }, reducedMotion ? 0 : "-=0.2")
         .to(".loader-line-fill", { scaleX: 1, duration: reducedMotion ? 0.1 : 1.45, ease: "power2.inOut" }, "<")
         .to(".loader-status", { y: -12, opacity: 0, duration: reducedMotion ? 0.01 : 0.25 })
-        .to(loader.current, {
+        .to(loaderElement, {
           clipPath: "inset(0 0 100% 0)",
           duration: reducedMotion ? 0.01 : 0.9,
           ease: "power4.inOut",
         })
-        .to(".loader-lime-layer", { scaleY: 0, duration: reducedMotion ? 0.01 : 0.7, ease: "power4.inOut" }, "-=0.72");
-    }, loader);
+        .to(limeLayerElement, { scaleY: 0, duration: reducedMotion ? 0.01 : 0.7, ease: "power4.inOut" }, "-=0.72");
+    }, loaderElement);
 
     return () => {
       ctx.revert();
       document.body.classList.remove("is-loading");
+      if (!completed) sessionStorage.removeItem(SESSION_KEY);
     };
   }, []);
 
@@ -64,8 +84,8 @@ export default function Loader() {
 
   return (
     <>
-      <div className="loader-lime-layer" aria-hidden="true" />
-      <div ref={loader} className="site-loader" role="status" aria-label="Loading portfolio">
+      <div ref={limeLayer} className="loader-lime-layer" aria-hidden="true" />
+      <div ref={loader} className="site-loader" role="status" aria-label="Loading portfolio" aria-live="polite">
         <div className="loader-grid" aria-hidden="true" />
         <div className="loader-brand">
           <span className="loader-sun"><i /></span>

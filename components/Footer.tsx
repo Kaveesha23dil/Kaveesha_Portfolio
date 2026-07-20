@@ -15,9 +15,9 @@ const navigation = [
 
 const socials = [
   { label: "LinkedIn", href: "https://www.linkedin.com" },
-  { label: "Behance", href: "https://www.behance.net" },
-  { label: "Dribbble", href: "https://dribbble.com" },
-  { label: "GitHub", href: "https://github.com" },
+  { label: "Behance", href: "https://www.behance.net/kaveeshadilshan10" },
+  { label: "Dribbble", href: "https://dribbble.com/Kavee23" },
+  { label: "GitHub", href: "https://github.com/Kaveesha23dil" },
 ];
 
 export default function Footer() {
