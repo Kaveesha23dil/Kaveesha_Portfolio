@@ -32,7 +32,7 @@ export default function Education() {
   useLayoutEffect(() => {
     registerMotion();
     const ctx = gsap.context(() => {
-      gsap.from(".education-reveal", {
+      gsap.from(".education-topline,.education-intro .education-reveal", {
         scrollTrigger: { trigger: section.current, start: "top 78%" },
         y: 42,
         opacity: 0,
@@ -42,8 +42,11 @@ export default function Education() {
       });
       const mm = gsap.matchMedia();
       mm.add(motionMedia.desktop, () => {
-        gsap.from(".education-item", { x: (index) => index % 2 === 0 ? -34 : 34, opacity: 0, duration: .75, stagger: .1, ease: "power3.out", scrollTrigger: { trigger: ".education-list", start: "top 78%" } });
+        gsap.fromTo(".education-item", { x: (index) => index % 2 === 0 ? -34 : 34, opacity: 0 }, { x: 0, opacity: 1, duration: .75, stagger: .1, ease: "power3.out", clearProps: "transform,opacity", scrollTrigger: { trigger: ".education-list", start: "top 82%", once: true } });
         gsap.fromTo(".education-list", { "--education-progress": "0%" }, { "--education-progress": "100%", ease: "none", scrollTrigger: { trigger: ".education-list", start: "top 75%", end: "bottom 45%", scrub: 1 } });
+      });
+      mm.add(motionMedia.mobile, () => {
+        gsap.fromTo(".education-item", { y: 22, opacity: 0 }, { y: 0, opacity: 1, duration: .55, stagger: .07, ease: "power2.out", clearProps: "transform,opacity", scrollTrigger: { trigger: ".education-list", start: "top 88%", once: true } });
       });
     }, section);
     return () => ctx.revert();

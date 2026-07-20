@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 import { ArrowRight, Menu, X } from "lucide-react";
 import { useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap";
-import { INTRO_COMPLETE_EVENT, INTRO_SESSION_KEY } from "@/components/motion";
 
 const links = [
   { label: "Home", href: "/" },
@@ -24,26 +23,14 @@ export default function Navbar() {
   useLayoutEffect(() => {
     const element = header.current;
     if (!element) return;
-    let revealed = false;
-    let lastY = window.scrollY;
-    const reveal = () => {
-      if (revealed) return;
-      revealed = true;
-      gsap.fromTo(element, { y: -24, opacity: 0, filter: "blur(8px)" }, { y: 0, opacity: 1, filter: "blur(0px)", duration: .75, ease: "power3.out", clearProps: "filter" });
-    };
     const onScroll = () => {
       const currentY = window.scrollY;
       element.classList.toggle("is-scrolled", currentY > 30);
-      gsap.to(element, { yPercent: currentY > lastY && currentY > 180 ? -110 : 0, duration: .35, ease: "power2.out", overwrite: true });
-      lastY = currentY;
     };
-    window.addEventListener(INTRO_COMPLETE_EVENT, reveal, { once: true });
     window.addEventListener("scroll", onScroll, { passive: true });
-    if (pathname !== "/" || sessionStorage.getItem(INTRO_SESSION_KEY)) requestAnimationFrame(reveal);
+    onScroll();
     return () => {
-      window.removeEventListener(INTRO_COMPLETE_EVENT, reveal);
       window.removeEventListener("scroll", onScroll);
-      gsap.killTweensOf(element);
     };
   }, [pathname]);
 
