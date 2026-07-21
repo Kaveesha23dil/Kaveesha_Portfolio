@@ -38,13 +38,18 @@ type PageMetadata = {
 export function createMetadata({ title, description, path, image = siteConfig.socialImage, imageAlt, type = "website", keywords = [] }: PageMetadata): Metadata {
   const canonical = absoluteUrl(path);
   const socialImage = absoluteUrl(image);
-  const fullTitle = `${title} | ${siteConfig.name}`;
+  const fullTitle = title.toLocaleLowerCase().includes(siteConfig.name.toLocaleLowerCase())
+    ? title
+    : `${title} | ${siteConfig.name}`;
 
   return {
     title: { absolute: fullTitle },
     description,
     keywords: [...new Set([...siteConfig.skills, ...keywords, siteConfig.name, "designer in Sri Lanka", "web developer in Sri Lanka"])],
-    alternates: { canonical },
+    alternates: {
+      canonical,
+      languages: { "en": canonical, "x-default": canonical },
+    },
     openGraph: {
       title: fullTitle,
       description,
