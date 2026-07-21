@@ -58,8 +58,8 @@ export default function Hero() {
       <section className="hero-grid">
         <div className="copy-col">
           <div className="hero-reveal availability"><span /> AVAILABLE FOR FREELANCE</div>
-          <h1 className="hero-reveal">Transforming<br /><em>Ideas</em> Into Digital<br />Products</h1>
-          <p className="hero-reveal intro">I design and build user-centered websites, applications, and digital experiences that are beautiful, functional, and impactful.</p>
+          <h1 className="hero-reveal">UI/UX Designer &amp;<br /><em>Creative</em> Developer<br />in Sri Lanka</h1>
+          <p className="hero-reveal intro">I&apos;m Kaveesha Dilshan. I design and build user-centered websites, applications, and digital experiences that are beautiful, functional, and impactful.</p>
           <div className="hero-reveal actions">
             <a href="/projects" className="primary-btn">View Projects <ArrowRight size={17} /></a>
             <a href="mailto:hello@windsun.dev" className="secondary-btn">Hire Me <ArrowRight size={17} /></a>
