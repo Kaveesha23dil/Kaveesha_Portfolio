@@ -10,9 +10,10 @@ import Footer from "@/components/Footer";
 import { createMetadata } from "@/lib/site";
 
 export const metadata: Metadata = createMetadata({
-  title: "Portfolio",
-  description: "Kaveesha Dilshan is a digital designer and creative developer in Colombo, creating user-centered interfaces, responsive websites, and interactive experiences with React, Next.js, and GSAP.",
+  title: "UI/UX Designer & Creative Developer in Sri Lanka",
+  description: "Kaveesha Dilshan is a UI/UX designer and creative developer in Colombo, Sri Lanka, creating responsive websites, product interfaces, and interactive React experiences.",
   path: "/",
+  keywords: ["UI/UX designer Sri Lanka", "UI designer Colombo", "UX designer Colombo", "creative developer Sri Lanka", "freelance web designer Sri Lanka"],
 });
 import Loader from "@/components/Loader";
 
