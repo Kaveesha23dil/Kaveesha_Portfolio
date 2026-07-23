@@ -24,6 +24,10 @@ export default function MotionController() {
   const progressNumber = useRef<HTMLElement>(null);
 
   useEffect(() => {
+    const previousScrollRestoration = window.history.scrollRestoration;
+    window.history.scrollRestoration = "manual";
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+
     gsap.registerPlugin(ScrollTrigger);
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -105,6 +109,7 @@ export default function MotionController() {
       gsap.ticker.remove(ticker);
       lenis.destroy();
       stopRefreshListeners();
+      window.history.scrollRestoration = previousScrollRestoration;
     };
   }, [pathname]);
 
