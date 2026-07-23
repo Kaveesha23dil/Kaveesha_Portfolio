@@ -59,7 +59,7 @@ export default function Navbar() {
       <nav className="desktop-nav" aria-label="Primary navigation">
         {links.map((link) => <Link key={link.href} href={link.href} className={pathname === link.href || (link.href !== "/" && pathname.startsWith(`${link.href}/`)) ? "active" : ""}>{link.label}</Link>)}
       </nav>
-      <a className="talk-btn" href="mailto:hello@windsun.dev"><span>Let&apos;s Talk</span><i><ArrowRight size={17} /></i></a>
+      <a className="talk-btn" href="mailto:kaveeshadilshankd23@gmail.com"><span>Let&apos;s Talk</span><i><ArrowRight size={17} /></i></a>
       <button className="menu-btn" onClick={() => setOpenForPath(open ? null : pathname)} aria-expanded={open} aria-controls="mobile-navigation" aria-label="Toggle menu">{open ? <X /> : <Menu />}</button>
       <nav ref={mobileNav} id="mobile-navigation" className="mobile-nav" aria-label="Mobile navigation" aria-hidden={!open}>{links.map((link) => <Link tabIndex={open ? 0 : -1} onClick={() => setOpenForPath(null)} key={link.href} href={link.href} className={pathname === link.href || (link.href !== "/" && pathname.startsWith(`${link.href}/`)) ? "active" : ""}>{link.label}</Link>)}</nav>
     </header>

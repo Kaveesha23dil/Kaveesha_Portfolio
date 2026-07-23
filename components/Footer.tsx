@@ -81,7 +81,7 @@ export default function Footer() {
         <div className="footer-contact footer-reveal">
           <span className="footer-label">SAY HELLO</span>
           <p>Have a project in mind or just want to connect?</p>
-          <a href="mailto:hello@windsun.dev" className="footer-email">hello@windsun.dev <ArrowUpRight size={18} /></a>
+          <a href="mailto:kaveeshadilshankd23@gmail.com" className="footer-email">kaveeshadilshankd23@gmail.com <ArrowUpRight size={18} /></a>
           <span>COLOMBO, SRI LANKA · UTC +05:30</span>
         </div>
       </div>

@@ -37,7 +37,7 @@ export default function Contact({ asPage = false }: { asPage?: boolean }) {
     const body = encodeURIComponent(
       `Name: ${data.get("name")}\nEmail: ${data.get("email")}\nProject: ${data.get("project")}\n\n${data.get("message")}`,
     );
-    window.location.href = `mailto:hello@windsun.dev?subject=${subject}&body=${body}`;
+    window.location.href = `mailto:kaveeshadilshankd23@gmail.com?subject=${subject}&body=${body}`;
   }
 
   return (
@@ -55,7 +55,7 @@ export default function Contact({ asPage = false }: { asPage?: boolean }) {
         </div>
         <div className="contact-direct contact-reveal">
           <span>PREFER EMAIL?</span>
-          <a href="mailto:hello@windsun.dev">hello@windsun.dev <ArrowUpRight size={20} /></a>
+          <a href="mailto:kaveeshadilshankd23@gmail.com">kaveeshadilshankd23@gmail.com <ArrowUpRight size={20} /></a>
           <p>I usually reply within 1–2 business days.</p>
         </div>
       </div>

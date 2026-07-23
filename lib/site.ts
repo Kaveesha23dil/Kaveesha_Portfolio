@@ -10,7 +10,7 @@ export const siteConfig = {
   url: (configuredUrl || (vercelUrl ? `https://${vercelUrl}` : "http://localhost:3000")).replace(/\/$/, ""),
   locale: "en_US",
   location: "Colombo, Sri Lanka",
-  email: "hello@windsun.dev",
+  email: "kaveeshadilshankd23@gmail.com",
   image: "/hero-kaveesha.png",
   socialImage: "/opengraph-image",
   profiles: [

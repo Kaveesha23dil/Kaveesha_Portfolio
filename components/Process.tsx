@@ -114,7 +114,7 @@ export default function Process({ sectionNumber = "05" }: { sectionNumber?: stri
       <div className="process-note process-reveal">
         <span className="process-note-mark">*</span>
         <p>Every engagement is different. The process flexes to fit your team, timeline, and ambition—without losing clarity.</p>
-        <a href="mailto:hello@windsun.dev?subject=Tell%20me%20about%20your%20process">Discuss your project <ArrowDownRight size={18} /></a>
+        <a href="mailto:kaveeshadilshankd23@gmail.com?subject=Tell%20me%20about%20your%20process">Discuss your project <ArrowDownRight size={18} /></a>
       </div>
     </section>
   );

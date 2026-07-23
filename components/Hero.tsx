@@ -62,7 +62,7 @@ export default function Hero() {
           <p className="hero-reveal intro">I&apos;m Kaveesha Dilshan. I design and build user-centered websites, applications, and digital experiences that are beautiful, functional, and impactful.</p>
           <div className="hero-reveal actions">
             <a href="/projects" className="primary-btn">View Projects <ArrowRight size={17} /></a>
-            <a href="mailto:hello@windsun.dev" className="secondary-btn">Hire Me <ArrowRight size={17} /></a>
+            <a href="mailto:kaveeshadilshankd23@gmail.com" className="secondary-btn">Hire Me <ArrowRight size={17} /></a>
           </div>
         </div>
 

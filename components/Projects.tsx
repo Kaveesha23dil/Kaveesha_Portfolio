@@ -81,7 +81,7 @@ export default function Projects({ categorized = false, asPage = false }: { cate
           <span>03 / MOTION DESIGN</span>
           <h3>Motion work is<br /><em>coming soon.</em></h3>
           <p>Dedicated motion design projects have not been published yet. This space is ready for title sequences, animated brand systems, product motion, and interaction studies.</p>
-          <a href="mailto:hello@windsun.dev?subject=Motion%20design%20project">Discuss a motion project <ArrowUpRight size={17} /></a>
+          <a href="mailto:kaveeshadilshankd23@gmail.com?subject=Motion%20design%20project">Discuss a motion project <ArrowUpRight size={17} /></a>
         </div>}
       </div>
       <a href="/contact" className="all-work-link">Start a project <span><ArrowUpRight size={20} /></span></a>

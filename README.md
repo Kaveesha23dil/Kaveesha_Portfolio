@@ -98,7 +98,7 @@ The simplest deployment path is [Vercel](https://vercel.com/). Import the GitHub
 - [GitHub](https://github.com/Kaveesha23dil)
 - [Behance](https://www.behance.net/kaveeshadilshan10)
 - [Dribbble](https://dribbble.com/Kavee23)
-- [Email](mailto:hello@windsun.dev)
+- [Email](mailto:kaveeshadilshankd23@gmail.com)
 
 ---
 

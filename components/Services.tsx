@@ -76,7 +76,7 @@ export default function Services({ sectionNumber = "04" }: { sectionNumber?: str
         </div>
         <div className="services-copy services-reveal">
           <p>I partner with ambitious teams to turn early ideas into clear, memorable digital experiences—combining sharp thinking, expressive design, and reliable code.</p>
-          <a href="mailto:hello@windsun.dev?subject=Project%20enquiry">Start a project <ArrowUpRight size={18} /></a>
+          <a href="mailto:kaveeshadilshankd23@gmail.com?subject=Project%20enquiry">Start a project <ArrowUpRight size={18} /></a>
         </div>
       </div>
 
@@ -103,7 +103,7 @@ export default function Services({ sectionNumber = "04" }: { sectionNumber?: str
 
       <div className="services-cta services-reveal">
         <span>Have something else in mind?</span>
-        <a href="mailto:hello@windsun.dev?subject=Let%27s%20work%20together">Let&apos;s shape it together <ArrowUpRight size={21} /></a>
+        <a href="mailto:kaveeshadilshankd23@gmail.com?subject=Let%27s%20work%20together">Let&apos;s shape it together <ArrowUpRight size={21} /></a>
       </div>
     </section>
   );

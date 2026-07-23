@@ -95,7 +95,7 @@ export default function Testimonials() {
       <div className="testimonials-footer testimonials-reveal">
         <div><span>18</span><p>happy clients<br />across 9 countries</p></div>
         <p>Great partnerships begin with an honest conversation.</p>
-        <a href="mailto:hello@windsun.dev?subject=Let%27s%20create%20something%20great">Become the next success story <ArrowUpRight size={19} /></a>
+        <a href="mailto:kaveeshadilshankd23@gmail.com?subject=Let%27s%20create%20something%20great">Become the next success story <ArrowUpRight size={19} /></a>
       </div>
     </section>
   );
