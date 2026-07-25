@@ -2,12 +2,13 @@ import type { Metadata } from "next";
 
 const configuredUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim();
 const vercelUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL?.trim();
+const productionUrl = "https://kaveesha-portfolio-khaki.vercel.app";
 
 export const siteConfig = {
   name: "Kaveesha Dilshan",
   role: "Digital Designer & Creative Developer",
   description: "Portfolio of Kaveesha Dilshan, a digital designer and creative developer in Colombo, Sri Lanka, creating user-centered products, responsive websites, and motion-rich digital experiences.",
-  url: (configuredUrl || (vercelUrl ? `https://${vercelUrl}` : "http://localhost:3000")).replace(/\/$/, ""),
+  url: (configuredUrl || (vercelUrl ? `https://${vercelUrl}` : productionUrl)).replace(/\/$/, ""),
   locale: "en_US",
   location: "Colombo, Sri Lanka",
   email: "kaveeshadilshankd23@gmail.com",

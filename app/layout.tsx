@@ -107,11 +107,15 @@ export default function Root({
               "@type": "Person",
               "@id": `${siteConfig.url}/#person`,
               name: siteConfig.name,
+              alternateName: "Kaveesha Dilshan KD",
               url: siteConfig.url,
               image: absoluteUrl(siteConfig.image),
               jobTitle: siteConfig.role,
               description: siteConfig.description,
               email: `mailto:${siteConfig.email}`,
+              mainEntityOfPage: {
+                "@id": `${siteConfig.url}/#profile`,
+              },
               address: {
                 "@type": "PostalAddress",
                 addressLocality: "Colombo",
@@ -130,6 +134,7 @@ export default function Root({
               "@id": `${siteConfig.url}/#website`,
               url: siteConfig.url,
               name: `${siteConfig.name} Portfolio`,
+              alternateName: "Kaveesha Dilshan UI/UX Portfolio",
               description: siteConfig.description,
               inLanguage: "en",
               author: {

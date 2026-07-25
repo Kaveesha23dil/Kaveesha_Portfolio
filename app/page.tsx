@@ -30,6 +30,10 @@ export default function Home() {
         description: siteConfig.description,
         inLanguage: "en",
         isPartOf: { "@id": `${siteConfig.url}/#website` },
+        primaryImageOfPage: {
+          "@type": "ImageObject",
+          url: absoluteUrl(siteConfig.image),
+        },
         mainEntity: { "@id": `${siteConfig.url}/#person` },
       }} />
       <Loader />
