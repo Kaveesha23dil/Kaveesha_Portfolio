@@ -58,7 +58,11 @@ cp .env.example .env.local
 
 ```env
 NEXT_PUBLIC_SITE_URL=https://your-domain.com
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-public-anon-key
 ```
+
+For review submissions, run [`supabase/reviews.sql`](./supabase/reviews.sql) in the Supabase SQL Editor. It creates the reviews table, validation constraints, Row Level Security policies, and restricted anonymous column grants. Add the same two public Supabase variables to the Vercel project settings, then redeploy.
 
 Start the development server:
 

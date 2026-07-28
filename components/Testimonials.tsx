@@ -1,36 +1,90 @@
 "use client";
 
-import { ArrowUpRight, Asterisk, Quote, Star } from "lucide-react";
-import { useLayoutEffect, useRef } from "react";
+import { ArrowUpRight, Asterisk, Plus, Star } from "lucide-react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import gsap from "gsap";
 import { motionMedia, registerMotion } from "@/components/motion";
+import ReviewCard, { type DisplayReview } from "@/components/ReviewCard";
+import ReviewModal from "@/components/ReviewModal";
+import { getApprovedReviews, type ApprovedReview } from "@/lib/supabase";
 
-const testimonials = [
+const testimonials: DisplayReview[] = [
   {
-    quote: "Kaveesha brought rare clarity to a complex product. The experience now feels effortless, focused, and unmistakably ours.",
-    name: "Maya Chen",
+    id: "fallback-1",
+    full_name: "Maya Chen",
+    job_title: "Co-founder",
+    company_name: "Nova Finance",
+    review_text: "Kaveesha brought rare clarity to a complex product. The experience now feels effortless, focused, and unmistakably ours.",
+    rating: 5,
+    project_type: "Product Design",
+    created_at: "2026-01-01",
     role: "Co-founder, Nova Finance",
     initials: "MC",
     project: "PRODUCT DESIGN · 2026",
   },
   {
-    quote: "The process was thoughtful from day one. Every design decision had a reason, and the final site exceeded what we imagined.",
-    name: "Daniel Reed",
+    id: "fallback-2",
+    full_name: "Daniel Reed",
+    job_title: "Creative Director",
+    company_name: "Roam",
+    review_text: "The process was thoughtful from day one. Every design decision had a reason, and the final site exceeded what we imagined.",
+    rating: 5,
+    project_type: "Web Experience",
+    created_at: "2025-01-01",
     role: "Creative Director, Roam",
     initials: "DR",
     project: "WEB EXPERIENCE · 2025",
   },
   {
-    quote: "A true creative partner—strategic, responsive, and obsessive about the details that make a product feel exceptional.",
-    name: "Amara Silva",
+    id: "fallback-3",
+    full_name: "Amara Silva",
+    job_title: "Head of Product",
+    company_name: "Synapse AI",
+    review_text: "A true creative partner—strategic, responsive, and obsessive about the details that make a product feel exceptional.",
+    rating: 5,
+    project_type: "Brand & Product",
+    created_at: "2025-01-01",
     role: "Head of Product, Synapse AI",
     initials: "AS",
     project: "BRAND & PRODUCT · 2025",
   },
 ];
 
+function toDisplayReview(review: ApprovedReview): DisplayReview {
+  const initials = review.full_name.split(/\s+/).filter(Boolean).slice(0, 2).map((name) => name[0]).join("").toUpperCase();
+  const role = [review.job_title, review.company_name].filter(Boolean).join(", ");
+  return {
+    ...review,
+    initials: initials || "CR",
+    role,
+    project: `${(review.project_type || "CLIENT PROJECT").toUpperCase()} · ${new Date(review.created_at).getFullYear()}`,
+  };
+}
+
 export default function Testimonials() {
   const section = useRef<HTMLElement>(null);
+  const [approvedReviews, setApprovedReviews] = useState<ApprovedReview[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [modalOpen, setModalOpen] = useState(false);
+  const closeModal = useCallback(() => setModalOpen(false), []);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    getApprovedReviews(controller.signal)
+      .then(setApprovedReviews)
+      .catch(() => setApprovedReviews([]))
+      .finally(() => setLoading(false));
+    return () => controller.abort();
+  }, []);
+
+  const displayedReviews = useMemo(
+    () => approvedReviews.length ? approvedReviews.map(toDisplayReview) : testimonials,
+    [approvedReviews],
+  );
+  const averageRating = useMemo(
+    () => (displayedReviews.reduce((sum, review) => sum + review.rating, 0) / displayedReviews.length).toFixed(1),
+    [displayedReviews],
+  );
 
   useLayoutEffect(() => {
     registerMotion();
@@ -68,35 +122,27 @@ export default function Testimonials() {
           <p className="eyebrow"><Asterisk size={15} /> KIND WORDS</p>
           <h2>Good work leaves a <em>lasting impression.</em></h2>
         </div>
-        <div className="testimonial-rating testimonials-reveal" aria-label="Rated five out of five">
+        <div className="testimonial-rating testimonials-reveal" aria-label={`Rated ${averageRating} out of five`}>
           <div>{Array.from({ length: 5 }).map((_, index) => <Star key={index} size={14} fill="currentColor" />)}</div>
-          <strong>5.0</strong>
+          <strong>{averageRating}</strong>
           <span>AVERAGE CLIENT RATING</span>
         </div>
       </div>
 
-      <div className="testimonials-grid">
-        {testimonials.map((item, index) => (
-          <article className={`testimonial-card ${index === 0 ? "testimonial-card--featured" : ""}`} key={item.name}>
-            <div className="testimonial-card-top">
-              <Quote size={index === 0 ? 42 : 29} fill="currentColor" />
-              <span>{String(index + 1).padStart(2, "0")}</span>
-            </div>
-            <blockquote>{item.quote}</blockquote>
-            <div className="testimonial-person">
-              <span className="testimonial-avatar">{item.initials}</span>
-              <div><strong>{item.name}</strong><span>{item.role}</span></div>
-              <small>{item.project}</small>
-            </div>
-          </article>
-        ))}
+      <div className={`testimonials-grid ${loading ? "is-loading" : ""}`} aria-busy={loading}>
+        {displayedReviews.map((review, index) => <ReviewCard review={review} index={index} key={review.id} />)}
       </div>
 
       <div className="testimonials-footer testimonials-reveal">
         <div><span>18</span><p>happy clients<br />across 9 countries</p></div>
         <p>Great partnerships begin with an honest conversation.</p>
-        <a href="mailto:kaveeshadilshankd23@gmail.com?subject=Let%27s%20create%20something%20great">Become the next success story <ArrowUpRight size={19} /></a>
+        <div className="testimonials-actions">
+          <a href="mailto:kaveeshadilshankd23@gmail.com?subject=Let%27s%20create%20something%20great">Become the next success story <ArrowUpRight size={19} /></a>
+          <button type="button" onClick={() => setModalOpen(true)}>Add a review <Plus size={18} /></button>
+        </div>
       </div>
+
+      <ReviewModal open={modalOpen} onClose={closeModal} />
     </section>
   );
 }
