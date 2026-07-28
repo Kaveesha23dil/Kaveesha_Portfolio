@@ -8,7 +8,23 @@
 
 The script creates `public.reviews`, database validation constraints, Row Level Security, an anonymous insert policy limited to pending reviews, and a public read policy limited to approved reviews. Anonymous users receive no update or delete permission. Column-level grants prevent the anonymous API from selecting reviewer email addresses.
 
-## 2. Configure local development
+It also creates `public.review_admins` and owner-only policies for the private moderation page.
+
+## 2. Create the private administrator
+
+1. Open **Supabase → Authentication → Users**.
+2. Create a user with your private admin email and a strong password.
+3. Copy that user's UUID.
+4. Run this in the SQL Editor:
+
+```sql
+insert into public.review_admins (user_id)
+values ('YOUR_AUTH_USER_UUID');
+```
+
+Only users registered in `review_admins` can read pending reviews or approve, reject, and delete submissions. The private dashboard is available at `/admin/reviews` and is marked `noindex`.
+
+## 3. Configure local development
 
 Copy `.env.example` to `.env.local` and add the public project values from **Supabase → Project Settings → API**:
 
@@ -21,7 +37,7 @@ Use only the public anonymous key. Never add the service-role key to a `NEXT_PUB
 
 Restart the development server after changing environment variables.
 
-## 3. Configure Vercel
+## 4. Configure Vercel
 
 1. Open the portfolio project in Vercel.
 2. Go to **Settings → Environment Variables**.
@@ -30,15 +46,11 @@ Restart the development server after changing environment variables.
 5. Apply both variables to Production, Preview, and Development as appropriate.
 6. Redeploy the latest commit.
 
-## 4. Moderate reviews
+## 5. Moderate reviews
 
 New submissions use the database default status `pending` and do not appear on the website.
 
-To publish a review:
-
-1. Open **Supabase → Table Editor → reviews**.
-2. Check the review content and reviewer details.
-3. Change `status` from `pending` to `approved`.
+To publish a review, open `/admin/reviews`, sign in with the administrator account, and select **Approve**. Use **Reject** to keep it private or **Delete** to remove it permanently.
 
 The approved review will then appear newest-first. Set the status to `rejected` to keep a review private.
 

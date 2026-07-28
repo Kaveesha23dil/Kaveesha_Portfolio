@@ -8,48 +8,6 @@ import ReviewCard, { type DisplayReview } from "@/components/ReviewCard";
 import ReviewModal from "@/components/ReviewModal";
 import { getApprovedReviews, type ApprovedReview } from "@/lib/supabase";
 
-const testimonials: DisplayReview[] = [
-  {
-    id: "fallback-1",
-    full_name: "Maya Chen",
-    job_title: "Co-founder",
-    company_name: "Nova Finance",
-    review_text: "Kaveesha brought rare clarity to a complex product. The experience now feels effortless, focused, and unmistakably ours.",
-    rating: 5,
-    project_type: "Product Design",
-    created_at: "2026-01-01",
-    role: "Co-founder, Nova Finance",
-    initials: "MC",
-    project: "PRODUCT DESIGN · 2026",
-  },
-  {
-    id: "fallback-2",
-    full_name: "Daniel Reed",
-    job_title: "Creative Director",
-    company_name: "Roam",
-    review_text: "The process was thoughtful from day one. Every design decision had a reason, and the final site exceeded what we imagined.",
-    rating: 5,
-    project_type: "Web Experience",
-    created_at: "2025-01-01",
-    role: "Creative Director, Roam",
-    initials: "DR",
-    project: "WEB EXPERIENCE · 2025",
-  },
-  {
-    id: "fallback-3",
-    full_name: "Amara Silva",
-    job_title: "Head of Product",
-    company_name: "Synapse AI",
-    review_text: "A true creative partner—strategic, responsive, and obsessive about the details that make a product feel exceptional.",
-    rating: 5,
-    project_type: "Brand & Product",
-    created_at: "2025-01-01",
-    role: "Head of Product, Synapse AI",
-    initials: "AS",
-    project: "BRAND & PRODUCT · 2025",
-  },
-];
-
 function toDisplayReview(review: ApprovedReview): DisplayReview {
   const initials = review.full_name.split(/\s+/).filter(Boolean).slice(0, 2).map((name) => name[0]).join("").toUpperCase();
   const role = [review.job_title, review.company_name].filter(Boolean).join(", ");
@@ -77,12 +35,11 @@ export default function Testimonials() {
     return () => controller.abort();
   }, []);
 
-  const displayedReviews = useMemo(
-    () => approvedReviews.length ? approvedReviews.map(toDisplayReview) : testimonials,
-    [approvedReviews],
-  );
+  const displayedReviews = useMemo(() => approvedReviews.map(toDisplayReview), [approvedReviews]);
   const averageRating = useMemo(
-    () => (displayedReviews.reduce((sum, review) => sum + review.rating, 0) / displayedReviews.length).toFixed(1),
+    () => displayedReviews.length
+      ? (displayedReviews.reduce((sum, review) => sum + review.rating, 0) / displayedReviews.length).toFixed(1)
+      : "—",
     [displayedReviews],
   );
 
@@ -129,12 +86,25 @@ export default function Testimonials() {
         </div>
       </div>
 
-      <div className={`testimonials-grid ${loading ? "is-loading" : ""}`} aria-busy={loading}>
-        {displayedReviews.map((review, index) => <ReviewCard review={review} index={index} key={review.id} />)}
-      </div>
+      {loading ? (
+        <div className="testimonials-loading" aria-live="polite" aria-busy="true">
+          <span />
+          <p>LOADING CLIENT REVIEWS</p>
+        </div>
+      ) : displayedReviews.length ? (
+        <div className="testimonials-grid">
+          {displayedReviews.map((review, index) => <ReviewCard review={review} index={index} key={review.id} />)}
+        </div>
+      ) : (
+        <div className="testimonials-empty">
+          <span>01 / YOUR STORY COULD BE HERE</span>
+          <h3>No published reviews yet.</h3>
+          <p>Worked with me before? Share your experience and become the first published review.</p>
+          <button type="button" onClick={() => setModalOpen(true)}>Add the first review <Plus size={18} /></button>
+        </div>
+      )}
 
       <div className="testimonials-footer testimonials-reveal">
-        <div><span>18</span><p>happy clients<br />across 9 countries</p></div>
         <p>Great partnerships begin with an honest conversation.</p>
         <div className="testimonials-actions">
           <a href="mailto:kaveeshadilshankd23@gmail.com?subject=Let%27s%20create%20something%20great">Become the next success story <ArrowUpRight size={19} /></a>

@@ -26,6 +26,13 @@ create table if not exists public.reviews (
 
 alter table public.reviews enable row level security;
 
+create table if not exists public.review_admins (
+  user_id uuid primary key references auth.users(id) on delete cascade,
+  created_at timestamptz not null default now()
+);
+
+alter table public.review_admins enable row level security;
+
 revoke all on table public.reviews from anon;
 grant insert (
   full_name,
@@ -47,6 +54,8 @@ grant select (
   status,
   created_at
 ) on table public.reviews to anon;
+grant select, update, delete on table public.reviews to authenticated;
+grant select on table public.review_admins to authenticated;
 
 drop policy if exists "Anonymous visitors can submit pending reviews" on public.reviews;
 create policy "Anonymous visitors can submit pending reviews"
@@ -62,4 +71,56 @@ for select
 to anon
 using (status = 'approved');
 
--- No UPDATE or DELETE grants or policies are created for anonymous visitors.
+drop policy if exists "Administrators can read every review" on public.reviews;
+create policy "Administrators can read every review"
+on public.reviews
+for select
+to authenticated
+using (
+  exists (
+    select 1 from public.review_admins
+    where review_admins.user_id = auth.uid()
+  )
+);
+
+drop policy if exists "Administrators can update reviews" on public.reviews;
+create policy "Administrators can update reviews"
+on public.reviews
+for update
+to authenticated
+using (
+  exists (
+    select 1 from public.review_admins
+    where review_admins.user_id = auth.uid()
+  )
+)
+with check (
+  exists (
+    select 1 from public.review_admins
+    where review_admins.user_id = auth.uid()
+  )
+);
+
+drop policy if exists "Administrators can delete reviews" on public.reviews;
+create policy "Administrators can delete reviews"
+on public.reviews
+for delete
+to authenticated
+using (
+  exists (
+    select 1 from public.review_admins
+    where review_admins.user_id = auth.uid()
+  )
+);
+
+drop policy if exists "Administrators can read their membership" on public.review_admins;
+create policy "Administrators can read their membership"
+on public.review_admins
+for select
+to authenticated
+using (user_id = auth.uid());
+
+-- Anonymous visitors receive no UPDATE or DELETE grants or policies.
+-- After creating an Auth user, register it as an administrator:
+-- insert into public.review_admins (user_id)
+-- values ('AUTH_USER_UUID_HERE');
