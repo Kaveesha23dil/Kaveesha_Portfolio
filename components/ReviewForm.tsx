@@ -115,7 +115,7 @@ export default function ReviewForm({ onSuccess }: Props) {
         <div className="review-field review-field--wide">
           <label htmlFor="review-project">PROJECT TYPE <i>OPTIONAL</i></label>
           <select id="review-project" value={form.projectType} onChange={(event) => update("projectType", event.target.value)}>
-            <option value="">Select a project type</option>
+            <option value="" disabled>Select a project type</option>
             {projectTypes.map((type) => <option key={type}>{type}</option>)}
           </select>
         </div>
