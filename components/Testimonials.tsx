@@ -6,9 +6,9 @@ import gsap from "gsap";
 import { motionMedia, registerMotion } from "@/components/motion";
 import ReviewCard, { type DisplayReview } from "@/components/ReviewCard";
 import ReviewModal from "@/components/ReviewModal";
-import { getApprovedReviews, type ApprovedReview } from "@/lib/supabase";
+import { getStoredReviews, type StoredReview } from "@/lib/reviews";
 
-function toDisplayReview(review: ApprovedReview): DisplayReview {
+function toDisplayReview(review: StoredReview): DisplayReview {
   const initials = review.full_name.split(/\s+/).filter(Boolean).slice(0, 2).map((name) => name[0]).join("").toUpperCase();
   const role = [review.job_title, review.company_name].filter(Boolean).join(", ");
   return {
@@ -21,21 +21,21 @@ function toDisplayReview(review: ApprovedReview): DisplayReview {
 
 export default function Testimonials() {
   const section = useRef<HTMLElement>(null);
-  const [approvedReviews, setApprovedReviews] = useState<ApprovedReview[]>([]);
+  const [reviews, setReviews] = useState<StoredReview[]>([]);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const closeModal = useCallback(() => setModalOpen(false), []);
 
   useEffect(() => {
-    const controller = new AbortController();
-    getApprovedReviews(controller.signal)
-      .then(setApprovedReviews)
-      .catch(() => setApprovedReviews([]))
-      .finally(() => setLoading(false));
-    return () => controller.abort();
+    const loadReviews = async () => {
+      await Promise.resolve();
+      setReviews(getStoredReviews());
+      setLoading(false);
+    };
+    void loadReviews();
   }, []);
 
-  const displayedReviews = useMemo(() => approvedReviews.map(toDisplayReview), [approvedReviews]);
+  const displayedReviews = useMemo(() => reviews.map(toDisplayReview), [reviews]);
   const averageRating = useMemo(
     () => displayedReviews.length
       ? (displayedReviews.reduce((sum, review) => sum + review.rating, 0) / displayedReviews.length).toFixed(1)
@@ -98,8 +98,8 @@ export default function Testimonials() {
       ) : (
         <div className="testimonials-empty">
           <span>01 / YOUR STORY COULD BE HERE</span>
-          <h3>No published reviews yet.</h3>
-          <p>Worked with me before? Share your experience and become the first published review.</p>
+          <h3>No reviews yet.</h3>
+          <p>Worked with me before? Share your experience and it will appear here immediately.</p>
           <button type="button" onClick={() => setModalOpen(true)}>Add the first review <Plus size={18} /></button>
         </div>
       )}
@@ -112,7 +112,11 @@ export default function Testimonials() {
         </div>
       </div>
 
-      <ReviewModal open={modalOpen} onClose={closeModal} />
+      <ReviewModal
+        open={modalOpen}
+        onClose={closeModal}
+        onReviewAdded={(review) => setReviews((current) => [review, ...current])}
+      />
     </section>
   );
 }

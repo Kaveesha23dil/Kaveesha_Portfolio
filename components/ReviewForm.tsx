@@ -2,7 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import { Send, Star } from "lucide-react";
-import { submitReview, type ReviewSubmission } from "@/lib/supabase";
+import { saveReview, type ReviewSubmission, type StoredReview } from "@/lib/reviews";
 
 const projectTypes = ["UI/UX Design", "Web Development", "Brand Design", "Motion Design", "Other"];
 const initialForm = {
@@ -20,7 +20,7 @@ type FormState = typeof initialForm;
 type Errors = Partial<Record<keyof FormState, string>>;
 
 type Props = {
-  onSuccess: () => void;
+  onSuccess: (review: StoredReview) => void;
 };
 
 const clean = (value: string, max: number) =>
@@ -70,7 +70,7 @@ export default function ReviewForm({ onSuccess }: Props) {
     if (status === "error") setStatus("idle");
   };
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (form.website) return;
 
@@ -81,10 +81,10 @@ export default function ReviewForm({ onSuccess }: Props) {
     setStatus("loading");
     setSubmitError("");
     try {
-      await submitReview(result.review);
+      const savedReview = saveReview(result.review);
       setForm(initialForm);
       setStatus("success");
-      window.setTimeout(onSuccess, 2200);
+      window.setTimeout(() => onSuccess(savedReview), 1300);
     } catch (error) {
       setSubmitError(error instanceof Error ? error.message : "Something went wrong. Please try again.");
       setStatus("error");
@@ -144,11 +144,11 @@ export default function ReviewForm({ onSuccess }: Props) {
         <input id="review-website" name="website" value={form.website} onChange={(event) => update("website", event.target.value)} tabIndex={-1} autoComplete="off" />
       </div>
 
-      {status === "success" && <p className="review-success" role="status">Thank you! Your review was submitted and will appear after approval.</p>}
+      {status === "success" && <p className="review-success" role="status">Thank you! Your review has been added.</p>}
       {status === "error" && <p className="review-error" role="alert">{submitError}</p>}
 
       <div className="review-form-footer">
-        <p>Reviews are checked before being published.</p>
+        <p>Your review will appear immediately on this browser.</p>
         <button className="review-submit" type="submit" disabled={status === "loading" || status === "success"}>
           {status === "loading" ? "SUBMITTING..." : status === "success" ? "SUBMITTED" : "SUBMIT REVIEW"}
           <span><Send size={16} /></span>
