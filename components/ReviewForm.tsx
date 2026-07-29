@@ -36,9 +36,7 @@ function validate(form: FormState): { errors: Errors; review?: ReviewSubmission 
   const projectType = projectTypes.includes(form.projectType) ? form.projectType : "";
 
   if (!fullName) errors.fullName = "Please enter your full name.";
-  if (!jobTitle) errors.jobTitle = "Please enter your job title.";
-  if (!email) errors.email = "Please enter your email address.";
-  else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors.email = "Please enter a valid email address.";
+  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors.email = "Please enter a valid email address.";
   if (!reviewText) errors.reviewText = "Please write your review.";
   if (reviewText.length > 500) errors.reviewText = "Your review must be 500 characters or fewer.";
   if (form.rating < 1 || form.rating > 5) errors.rating = "Please choose a rating.";
@@ -48,9 +46,9 @@ function validate(form: FormState): { errors: Errors; review?: ReviewSubmission 
     errors,
     review: {
       full_name: fullName,
-      job_title: jobTitle,
+      job_title: jobTitle || "Client",
       company_name: companyName || null,
-      email,
+      email: email || undefined,
       review_text: reviewText,
       rating: form.rating,
       project_type: projectType || null,
@@ -84,7 +82,7 @@ export default function ReviewForm({ onSuccess }: Props) {
       const savedReview = saveReview(result.review);
       setForm(initialForm);
       setStatus("success");
-      window.setTimeout(() => onSuccess(savedReview), 1300);
+      onSuccess(savedReview);
     } catch (error) {
       setSubmitError(error instanceof Error ? error.message : "Something went wrong. Please try again.");
       setStatus("error");
@@ -100,7 +98,7 @@ export default function ReviewForm({ onSuccess }: Props) {
           {errors.fullName && <small id="review-name-error" role="alert">{errors.fullName}</small>}
         </div>
         <div className="review-field">
-          <label htmlFor="review-job">JOB TITLE <span>*</span></label>
+          <label htmlFor="review-job">JOB TITLE <i>OPTIONAL</i></label>
           <input id="review-job" value={form.jobTitle} onChange={(event) => update("jobTitle", event.target.value)} maxLength={100} autoComplete="organization-title" aria-invalid={Boolean(errors.jobTitle)} aria-describedby={errors.jobTitle ? "review-job-error" : undefined} />
           {errors.jobTitle && <small id="review-job-error" role="alert">{errors.jobTitle}</small>}
         </div>
@@ -109,7 +107,7 @@ export default function ReviewForm({ onSuccess }: Props) {
           <input id="review-company" value={form.companyName} onChange={(event) => update("companyName", event.target.value)} maxLength={120} autoComplete="organization" />
         </div>
         <div className="review-field">
-          <label htmlFor="review-email">EMAIL ADDRESS <span>*</span></label>
+          <label htmlFor="review-email">EMAIL ADDRESS <i>OPTIONAL</i></label>
           <input id="review-email" type="email" value={form.email} onChange={(event) => update("email", event.target.value)} maxLength={254} autoComplete="email" aria-invalid={Boolean(errors.email)} aria-describedby={errors.email ? "review-email-error" : "review-email-note"} />
           <em id="review-email-note">Never displayed publicly.</em>
           {errors.email && <small id="review-email-error" role="alert">{errors.email}</small>}

@@ -10,7 +10,7 @@ export type StoredReview = {
 };
 
 export type ReviewSubmission = Omit<StoredReview, "id" | "created_at"> & {
-  email: string;
+  email?: string;
 };
 
 const storageKey = "kaveesha-portfolio-reviews";
@@ -28,7 +28,8 @@ export function getStoredReviews(): StoredReview[] {
 
 export function saveReview(submission: ReviewSubmission): StoredReview {
   const review: StoredReview = {
-    id: crypto.randomUUID(),
+    id: globalThis.crypto?.randomUUID?.()
+      ?? `review-${Date.now()}-${Math.random().toString(36).slice(2)}`,
     full_name: submission.full_name,
     job_title: submission.job_title,
     company_name: submission.company_name,
@@ -38,6 +39,11 @@ export function saveReview(submission: ReviewSubmission): StoredReview {
     created_at: new Date().toISOString(),
   };
 
-  window.localStorage.setItem(storageKey, JSON.stringify([review, ...getStoredReviews()]));
+  try {
+    window.localStorage.setItem(storageKey, JSON.stringify([review, ...getStoredReviews()]));
+  } catch {
+    // The review is still returned and displayed for this session when storage
+    // is unavailable (for example, in a browser's strict privacy mode).
+  }
   return review;
 }
