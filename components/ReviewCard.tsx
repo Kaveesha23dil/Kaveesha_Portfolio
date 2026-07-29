@@ -1,7 +1,7 @@
 import { Quote, Star } from "lucide-react";
-import type { ApprovedReview } from "@/lib/supabase";
+import type { StoredReview } from "@/lib/reviews";
 
-export type DisplayReview = ApprovedReview & {
+export type DisplayReview = StoredReview & {
   initials: string;
   role: string;
   project: string;
