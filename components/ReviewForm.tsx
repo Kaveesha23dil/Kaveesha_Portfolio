@@ -68,7 +68,7 @@ export default function ReviewForm({ onSuccess }: Props) {
     if (status === "error") setStatus("idle");
   };
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (form.website) return;
 
@@ -79,7 +79,7 @@ export default function ReviewForm({ onSuccess }: Props) {
     setStatus("loading");
     setSubmitError("");
     try {
-      const savedReview = saveReview(result.review);
+      const savedReview = await saveReview(result.review);
       setForm(initialForm);
       setStatus("success");
       onSuccess(savedReview);
