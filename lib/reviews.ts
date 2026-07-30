@@ -14,6 +14,17 @@ export type ReviewSubmission = Omit<StoredReview, "id" | "created_at"> & {
 };
 
 const storageKey = "kaveesha-portfolio-reviews";
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL?.replace(/\/$/, "");
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+function supabaseHeaders(prefer?: string): HeadersInit {
+  return {
+    apikey: supabaseKey ?? "",
+    Authorization: `Bearer ${supabaseKey ?? ""}`,
+    "Content-Type": "application/json",
+    ...(prefer ? { Prefer: prefer } : {}),
+  };
+}
 
 export function getStoredReviews(): StoredReview[] {
   try {
@@ -26,8 +37,8 @@ export function getStoredReviews(): StoredReview[] {
   }
 }
 
-export function saveReview(submission: ReviewSubmission): StoredReview {
-  const review: StoredReview = {
+function createReview(submission: ReviewSubmission): StoredReview {
+  return {
     id: globalThis.crypto?.randomUUID?.()
       ?? `review-${Date.now()}-${Math.random().toString(36).slice(2)}`,
     full_name: submission.full_name,
@@ -38,6 +49,49 @@ export function saveReview(submission: ReviewSubmission): StoredReview {
     project_type: submission.project_type,
     created_at: new Date().toISOString(),
   };
+}
+
+export async function getReviews(signal?: AbortSignal): Promise<StoredReview[]> {
+  if (!supabaseUrl || !supabaseKey) return getStoredReviews();
+
+  try {
+    const columns = "id,full_name,job_title,company_name,review_text,rating,project_type,created_at";
+    const response = await fetch(
+      `${supabaseUrl}/rest/v1/reviews?status=eq.approved&select=${columns}&order=created_at.desc`,
+      { headers: supabaseHeaders(), signal, cache: "no-store" },
+    );
+    if (!response.ok) throw new Error("Reviews could not be loaded.");
+    return await response.json() as StoredReview[];
+  } catch (error) {
+    if (error instanceof DOMException && error.name === "AbortError") throw error;
+    return getStoredReviews();
+  }
+}
+
+export async function saveReview(submission: ReviewSubmission): Promise<StoredReview> {
+  const review = createReview(submission);
+
+  if (supabaseUrl && supabaseKey) {
+    const response = await fetch(`${supabaseUrl}/rest/v1/reviews?select=id,full_name,job_title,company_name,review_text,rating,project_type,created_at`, {
+      method: "POST",
+      headers: supabaseHeaders("return=representation"),
+      body: JSON.stringify({ ...submission, status: "approved" }),
+    });
+
+    if (!response.ok) {
+      let detail = "";
+      try {
+        const error = await response.json() as { message?: string };
+        detail = error.message ? ` ${error.message}` : "";
+      } catch {
+        // Supabase did not return a JSON error body.
+      }
+      throw new Error(`Your review could not be published.${detail}`);
+    }
+
+    const saved = await response.json() as StoredReview[];
+    if (saved[0]) return saved[0];
+  }
 
   try {
     window.localStorage.setItem(storageKey, JSON.stringify([review, ...getStoredReviews()]));

@@ -6,7 +6,7 @@ import gsap from "gsap";
 import { motionMedia, registerMotion } from "@/components/motion";
 import ReviewCard, { type DisplayReview } from "@/components/ReviewCard";
 import ReviewModal from "@/components/ReviewModal";
-import { getStoredReviews, type StoredReview } from "@/lib/reviews";
+import { getReviews, type StoredReview } from "@/lib/reviews";
 
 function toDisplayReview(review: StoredReview): DisplayReview {
   const initials = review.full_name.split(/\s+/).filter(Boolean).slice(0, 2).map((name) => name[0]).join("").toUpperCase();
@@ -27,12 +27,24 @@ export default function Testimonials() {
   const closeModal = useCallback(() => setModalOpen(false), []);
 
   useEffect(() => {
+    const controller = new AbortController();
     const loadReviews = async () => {
-      await Promise.resolve();
-      setReviews(getStoredReviews());
-      setLoading(false);
+      try {
+        setReviews(await getReviews(controller.signal));
+      } catch (error) {
+        if (!(error instanceof DOMException && error.name === "AbortError")) {
+          setReviews([]);
+        }
+      } finally {
+        if (!controller.signal.aborted) setLoading(false);
+      }
     };
     void loadReviews();
+    const refresh = window.setInterval(() => void loadReviews(), 30_000);
+    return () => {
+      controller.abort();
+      window.clearInterval(refresh);
+    };
   }, []);
 
   const displayedReviews = useMemo(() => reviews.map(toDisplayReview), [reviews]);
