@@ -106,6 +106,12 @@ export default function Contact({ asPage = false }: { asPage?: boolean }) {
             <strong>UTC +05:30</strong>
             <p>Flexible overlap for global teams.</p>
           </div>
+          <div className="contact-detail-block">
+            <span>PROFESSIONAL PROFILE</span>
+            <a className="contact-profile-link" href="https://www.linkedin.com/in/kaveesha-dilshan-503441424/" target="_blank" rel="noreferrer">
+              Connect on LinkedIn <ArrowUpRight size={16} />
+            </a>
+          </div>
         </aside>
       </div>
 

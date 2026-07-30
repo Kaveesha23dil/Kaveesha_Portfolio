@@ -97,6 +97,7 @@ The simplest deployment path is [Vercel](https://vercel.com/). Import the GitHub
 
 ## Connect
 
+- [LinkedIn](https://www.linkedin.com/in/kaveesha-dilshan-503441424/)
 - [GitHub](https://github.com/Kaveesha23dil)
 - [Behance](https://www.behance.net/kaveeshadilshan10)
 - [Dribbble](https://dribbble.com/Kavee23)

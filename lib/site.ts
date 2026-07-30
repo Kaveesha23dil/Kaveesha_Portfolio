@@ -15,6 +15,7 @@ export const siteConfig = {
   image: "/hero-kaveesha.png",
   socialImage: "/opengraph-image",
   profiles: [
+    "https://www.linkedin.com/in/kaveesha-dilshan-503441424/",
     "https://www.behance.net/kaveeshadilshan10",
     "https://dribbble.com/Kavee23",
     "https://github.com/Kaveesha23dil",

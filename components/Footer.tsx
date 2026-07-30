@@ -15,6 +15,7 @@ const navigation = [
 ];
 
 const socials = [
+  { label: "LinkedIn", href: "https://www.linkedin.com/in/kaveesha-dilshan-503441424/" },
   { label: "Behance", href: "https://www.behance.net/kaveeshadilshan10" },
   { label: "Dribbble", href: "https://dribbble.com/Kavee23" },
   { label: "GitHub", href: "https://github.com/Kaveesha23dil" },
