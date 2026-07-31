@@ -7,6 +7,7 @@ create table if not exists public.reviews (
   full_name text not null,
   job_title text not null default 'Client',
   company_name text,
+  avatar_url text,
   email text,
   review_text text not null,
   rating integer not null check (rating between 1 and 5),
@@ -14,6 +15,9 @@ create table if not exists public.reviews (
   status text not null default 'pending' check (status in ('pending', 'approved', 'rejected')),
   created_at timestamptz not null default now()
 );
+
+alter table public.reviews
+  add column if not exists avatar_url text;
 
 alter table public.reviews
   alter column email drop not null,
@@ -28,9 +32,9 @@ alter table public.reviews enable row level security;
 alter table public.review_admins enable row level security;
 
 revoke all on table public.reviews from anon;
-grant insert (full_name, job_title, company_name, email, review_text, rating, project_type)
+grant insert (full_name, job_title, company_name, email, avatar_url, review_text, rating, project_type)
 on table public.reviews to anon;
-grant select (id, full_name, job_title, company_name, review_text, rating, project_type, status, created_at)
+grant select (id, full_name, job_title, company_name, avatar_url, review_text, rating, project_type, status, created_at)
 on table public.reviews to anon;
 grant select, update, delete on table public.reviews to authenticated;
 grant select on table public.review_admins to authenticated;

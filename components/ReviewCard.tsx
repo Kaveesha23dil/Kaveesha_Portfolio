@@ -26,7 +26,9 @@ export default function ReviewCard({ review, index }: Props) {
       </div>
       <blockquote>{review.review_text}</blockquote>
       <div className="testimonial-person">
-        <span className="testimonial-avatar">{review.initials}</span>
+        <span className="testimonial-avatar">
+          {review.avatar_url ? <img src={review.avatar_url} alt="" /> : review.initials}
+        </span>
         <div><strong>{review.full_name}</strong><span>{review.role}</span></div>
         <small>{review.project}</small>
       </div>
