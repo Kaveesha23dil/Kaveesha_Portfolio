@@ -19,6 +19,8 @@ export type DevelopmentProject = {
   github: string;
   challenge: string;
   solution: string;
+  overview?: string[];
+  contributionIntro?: string;
   contributions: { title: string; detail: string }[];
   process: { number: string; title: string; detail: string }[];
   features: string[];
@@ -58,12 +60,13 @@ export default function DevelopmentCaseStudy({ project }: { project: Development
 
       <section data-scroll-section className="dev-context">
         <div className="case-section-label dev-reveal"><Asterisk size={14} /> PROJECT CONTEXT</div>
+        {project.overview && <div className="dev-overview dev-reveal">{project.overview.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}</div>}
         <div className="dev-context-grid"><article className="dev-reveal"><span>THE CHALLENGE</span><h2>{project.challenge}</h2></article><article className="dev-reveal"><span>THE SOLUTION</span><p>{project.solution}</p></article></div>
       </section>
 
       <section data-scroll-section className="dev-contribution">
         <div className="case-section-label dev-reveal"><Asterisk size={14} /> WHAT I DID</div>
-        <div className="dev-section-heading"><h2 className="dev-reveal">My contribution from concept to <em>working experience.</em></h2><p className="dev-reveal">I owned the front-end implementation and translated the creative direction into reusable components, interaction logic, and production-ready behavior.</p></div>
+        <div className="dev-section-heading"><h2 className="dev-reveal">My contribution from concept to <em>working experience.</em></h2><p className="dev-reveal">{project.contributionIntro || "I owned the front-end implementation and translated the creative direction into reusable components, interaction logic, and production-ready behavior."}</p></div>
         <div className="dev-card-grid">{project.contributions.map((item, index) => <article className="dev-info-card dev-reveal" key={item.title}><span>{String(index + 1).padStart(2,"0")}</span><Code2 size={22} /><h3>{item.title}</h3><p>{item.detail}</p></article>)}</div>
       </section>
 
