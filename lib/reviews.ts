@@ -13,91 +13,149 @@ export type ReviewSubmission = Omit<StoredReview, "id" | "created_at"> & {
   email?: string;
 };
 
-const storageKey = "kaveesha-portfolio-reviews";
+export type ModeratedReview = StoredReview & {
+  email: string | null;
+  status: "pending" | "approved" | "rejected";
+};
+
+export type SupabaseSession = {
+  access_token: string;
+  refresh_token: string;
+  expires_at: number;
+  user: { id: string; email?: string };
+};
+
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL?.replace(/\/$/, "");
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const sessionKey = "portfolio-review-admin-session";
 
-function supabaseHeaders(prefer?: string): HeadersInit {
+function publicHeaders(prefer?: string): HeadersInit {
+  if (!supabaseKey) return {};
   return {
-    apikey: supabaseKey ?? "",
-    Authorization: `Bearer ${supabaseKey ?? ""}`,
+    apikey: supabaseKey,
+    Authorization: `Bearer ${supabaseKey}`,
     "Content-Type": "application/json",
     ...(prefer ? { Prefer: prefer } : {}),
   };
 }
 
-export function getStoredReviews(): StoredReview[] {
-  try {
-    const stored = window.localStorage.getItem(storageKey);
-    if (!stored) return [];
-    const reviews = JSON.parse(stored) as StoredReview[];
-    return Array.isArray(reviews) ? reviews : [];
-  } catch {
-    return [];
-  }
+function ensureConfigured() {
+  if (!supabaseUrl || !supabaseKey) throw new Error("Supabase is not configured.");
 }
 
-function createReview(submission: ReviewSubmission): StoredReview {
-  return {
-    id: globalThis.crypto?.randomUUID?.()
-      ?? `review-${Date.now()}-${Math.random().toString(36).slice(2)}`,
-    full_name: submission.full_name,
-    job_title: submission.job_title,
-    company_name: submission.company_name,
-    review_text: submission.review_text,
-    rating: submission.rating,
-    project_type: submission.project_type,
-    created_at: new Date().toISOString(),
-  };
+async function responseError(response: Response, fallback: string) {
+  try {
+    const error = await response.json() as { message?: string };
+    return new Error(error.message || fallback);
+  } catch {
+    return new Error(fallback);
+  }
 }
 
 export async function getReviews(signal?: AbortSignal): Promise<StoredReview[]> {
-  if (!supabaseUrl || !supabaseKey) return getStoredReviews();
+  if (!supabaseUrl || !supabaseKey) return [];
+  const columns = "id,full_name,job_title,company_name,review_text,rating,project_type,created_at";
+  const response = await fetch(
+    `${supabaseUrl}/rest/v1/reviews?status=eq.approved&select=${columns}&order=created_at.desc`,
+    { headers: publicHeaders(), signal, cache: "no-store" },
+  );
+  if (!response.ok) throw await responseError(response, "Reviews could not be loaded.");
+  return response.json() as Promise<StoredReview[]>;
+}
 
+export async function saveReview(submission: ReviewSubmission): Promise<void> {
+  ensureConfigured();
+  const response = await fetch(`${supabaseUrl}/rest/v1/reviews`, {
+    method: "POST",
+    headers: publicHeaders("return=minimal"),
+    body: JSON.stringify(submission),
+  });
+  if (!response.ok) throw await responseError(response, "Your review could not be submitted.");
+}
+
+export async function signInAdmin(email: string, password: string): Promise<SupabaseSession> {
+  ensureConfigured();
+  const response = await fetch(`${supabaseUrl}/auth/v1/token?grant_type=password`, {
+    method: "POST",
+    headers: publicHeaders(),
+    body: JSON.stringify({ email: email.trim().toLowerCase(), password }),
+  });
+  if (!response.ok) throw new Error("Incorrect email or password.");
+  const data = await response.json();
+  const session: SupabaseSession = {
+    ...data,
+    expires_at: Math.floor(Date.now() / 1000) + data.expires_in,
+  };
+  window.localStorage.setItem(sessionKey, JSON.stringify(session));
+  return session;
+}
+
+export function getStoredAdminSession(): SupabaseSession | null {
   try {
-    const columns = "id,full_name,job_title,company_name,review_text,rating,project_type,created_at";
-    const response = await fetch(
-      `${supabaseUrl}/rest/v1/reviews?status=eq.approved&select=${columns}&order=created_at.desc`,
-      { headers: supabaseHeaders(), signal, cache: "no-store" },
-    );
-    if (!response.ok) throw new Error("Reviews could not be loaded.");
-    return await response.json() as StoredReview[];
-  } catch (error) {
-    if (error instanceof DOMException && error.name === "AbortError") throw error;
-    return getStoredReviews();
+    const value = window.localStorage.getItem(sessionKey);
+    return value ? JSON.parse(value) as SupabaseSession : null;
+  } catch {
+    return null;
   }
 }
 
-export async function saveReview(submission: ReviewSubmission): Promise<StoredReview> {
-  const review = createReview(submission);
+export function signOutAdmin() {
+  window.localStorage.removeItem(sessionKey);
+}
 
-  if (supabaseUrl && supabaseKey) {
-    const response = await fetch(`${supabaseUrl}/rest/v1/reviews?select=id,full_name,job_title,company_name,review_text,rating,project_type,created_at`, {
+async function authenticatedHeaders(session: SupabaseSession, prefer?: string): Promise<HeadersInit> {
+  ensureConfigured();
+  if (session.expires_at <= Math.floor(Date.now() / 1000) + 30) {
+    const response = await fetch(`${supabaseUrl}/auth/v1/token?grant_type=refresh_token`, {
       method: "POST",
-      headers: supabaseHeaders("return=representation"),
-      body: JSON.stringify({ ...submission, status: "approved" }),
+      headers: publicHeaders(),
+      body: JSON.stringify({ refresh_token: session.refresh_token }),
     });
-
     if (!response.ok) {
-      let detail = "";
-      try {
-        const error = await response.json() as { message?: string };
-        detail = error.message ? ` ${error.message}` : "";
-      } catch {
-        // Supabase did not return a JSON error body.
-      }
-      throw new Error(`Your review could not be published.${detail}`);
+      signOutAdmin();
+      throw new Error("Your session expired. Please sign in again.");
     }
-
-    const saved = await response.json() as StoredReview[];
-    if (saved[0]) return saved[0];
+    const data = await response.json();
+    Object.assign(session, data, {
+      expires_at: Math.floor(Date.now() / 1000) + data.expires_in,
+    });
+    window.localStorage.setItem(sessionKey, JSON.stringify(session));
   }
+  return {
+    apikey: supabaseKey!,
+    Authorization: `Bearer ${session.access_token}`,
+    "Content-Type": "application/json",
+    ...(prefer ? { Prefer: prefer } : {}),
+  };
+}
 
-  try {
-    window.localStorage.setItem(storageKey, JSON.stringify([review, ...getStoredReviews()]));
-  } catch {
-    // The review is still returned and displayed for this session when storage
-    // is unavailable (for example, in a browser's strict privacy mode).
-  }
-  return review;
+export async function getReviewsForModeration(session: SupabaseSession): Promise<ModeratedReview[]> {
+  ensureConfigured();
+  const columns = "id,full_name,job_title,company_name,email,review_text,rating,project_type,status,created_at";
+  const response = await fetch(
+    `${supabaseUrl}/rest/v1/reviews?select=${columns}&order=created_at.desc`,
+    { headers: await authenticatedHeaders(session), cache: "no-store" },
+  );
+  if (response.status === 401 || response.status === 403) throw new Error("This account is not registered as a review administrator.");
+  if (!response.ok) throw await responseError(response, "Reviews could not be loaded.");
+  return response.json() as Promise<ModeratedReview[]>;
+}
+
+export async function updateReviewStatus(session: SupabaseSession, id: string, status: ModeratedReview["status"]) {
+  ensureConfigured();
+  const response = await fetch(`${supabaseUrl}/rest/v1/reviews?id=eq.${encodeURIComponent(id)}`, {
+    method: "PATCH",
+    headers: await authenticatedHeaders(session, "return=minimal"),
+    body: JSON.stringify({ status }),
+  });
+  if (!response.ok) throw await responseError(response, "The review status could not be updated.");
+}
+
+export async function deleteReview(session: SupabaseSession, id: string) {
+  ensureConfigured();
+  const response = await fetch(`${supabaseUrl}/rest/v1/reviews?id=eq.${encodeURIComponent(id)}`, {
+    method: "DELETE",
+    headers: await authenticatedHeaders(session, "return=minimal"),
+  });
+  if (!response.ok) throw await responseError(response, "The review could not be deleted.");
 }

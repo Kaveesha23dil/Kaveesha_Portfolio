@@ -2,7 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import { Send, Star } from "lucide-react";
-import { saveReview, type ReviewSubmission, type StoredReview } from "@/lib/reviews";
+import { saveReview, type ReviewSubmission } from "@/lib/reviews";
 
 const projectTypes = ["UI/UX Design", "Web Development", "Brand Design", "Motion Design", "Other"];
 const initialForm = {
@@ -20,7 +20,7 @@ type FormState = typeof initialForm;
 type Errors = Partial<Record<keyof FormState, string>>;
 
 type Props = {
-  onSuccess: (review: StoredReview) => void;
+  onSuccess: () => void;
 };
 
 const clean = (value: string, max: number) =>
@@ -79,10 +79,10 @@ export default function ReviewForm({ onSuccess }: Props) {
     setStatus("loading");
     setSubmitError("");
     try {
-      const savedReview = await saveReview(result.review);
+      await saveReview(result.review);
       setForm(initialForm);
       setStatus("success");
-      onSuccess(savedReview);
+      window.setTimeout(onSuccess, 1300);
     } catch (error) {
       setSubmitError(error instanceof Error ? error.message : "Something went wrong. Please try again.");
       setStatus("error");
@@ -142,11 +142,11 @@ export default function ReviewForm({ onSuccess }: Props) {
         <input id="review-website" name="website" value={form.website} onChange={(event) => update("website", event.target.value)} tabIndex={-1} autoComplete="off" />
       </div>
 
-      {status === "success" && <p className="review-success" role="status">Thank you! Your review has been added.</p>}
+      {status === "success" && <p className="review-success" role="status">Thank you! Your review was submitted for approval.</p>}
       {status === "error" && <p className="review-error" role="alert">{submitError}</p>}
 
       <div className="review-form-footer">
-        <p>Your review will appear immediately on this browser.</p>
+        <p>Your review will appear after it has been approved.</p>
         <button className="review-submit" type="submit" disabled={status === "loading" || status === "success"}>
           {status === "loading" ? "SUBMITTING..." : status === "success" ? "SUBMITTED" : "SUBMIT REVIEW"}
           <span><Send size={16} /></span>

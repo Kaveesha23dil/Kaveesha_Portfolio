@@ -4,15 +4,13 @@ import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 import ReviewForm from "@/components/ReviewForm";
-import type { StoredReview } from "@/lib/reviews";
 
 type Props = {
   open: boolean;
   onClose: () => void;
-  onReviewAdded: (review: StoredReview) => void;
 };
 
-export default function ReviewModal({ open, onClose, onReviewAdded }: Props) {
+export default function ReviewModal({ open, onClose }: Props) {
   const dialog = useRef<HTMLDivElement>(null);
   const previousFocus = useRef<HTMLElement | null>(null);
 
@@ -62,7 +60,7 @@ export default function ReviewModal({ open, onClose, onReviewAdded }: Props) {
           <div><p>SHARE YOUR EXPERIENCE</p><h2 id="review-modal-title">Add a <em>review.</em></h2></div>
           <p id="review-modal-description">Worked with me on a project? Tell others what the experience was like.</p>
         </div>
-        <ReviewForm onSuccess={(review) => { onReviewAdded(review); onClose(); }} />
+        <ReviewForm onSuccess={onClose} />
       </div>
     </div>,
     document.body,
