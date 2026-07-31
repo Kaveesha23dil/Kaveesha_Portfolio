@@ -10,6 +10,7 @@ const projects = [
   { number: "01", type: "uiux", title: "Intrinsic Tech", category: "Website Redesign · UI/UX", year: "2026", image: "/mockup-intrinsic-tech.png", href: "/projects/intrinsic-tech", description: "A complete responsive redesign that makes a complex AI consultancy feel clear, credible, and ready for growth.", featured: true },
   { number: "02", type: "development", title: "GTA VI Experience", category: "Creative Development · GSAP", year: "2025", image: "/mockup-gtavi.png", href: "/projects/gtavi-experience", live: "https://gtavi-landingpage.vercel.app/", github: "https://github.com/Kaveesha23dil/GTAVI_Landingpage", description: "A cinematic responsive website built with GSAP-powered scroll choreography, character sequences, masks, and immersive video transitions." },
   { number: "03", type: "development", title: "Windows XP Portfolio", category: "Development · React", year: "2025", image: "/mockup-windows-xp.png", href: "/projects/windows-xp-portfolio", live: "https://windows-xp-portfolio-lime.vercel.app/", github: "https://github.com/Kaveesha23dil/Windows_Xp_Portfolio", description: "A nostalgic, fully interactive portfolio desktop with authentic XP windows, Start menu, taskbar, command prompt, Paint, Notepad, and project explorer." },
+  { number: "04", type: "development", title: "QuizServer", category: "Full-Stack / Electron", year: "ACADEMIC", image: "/mockup-quizserver.png", href: "/projects/quizserver", description: "A local-network assessment platform for creating, hosting, grading, and analyzing browser-based quizzes across participant devices." },
 ];
 
 const projectTypes = [
@@ -23,7 +24,8 @@ export default function Projects({ categorized = false, asPage = false }: { cate
   const section = useRef<HTMLElement>(null);
   const Heading = asPage ? "h1" : "h2";
   const [activeType, setActiveType] = useState<(typeof projectTypes)[number]["id"]>("all");
-  const visibleProjects = categorized && activeType !== "all" ? projects.filter((project) => project.type === activeType) : projects;
+  const availableProjects = asPage ? projects : projects.slice(0, 3);
+  const visibleProjects = categorized && activeType !== "all" ? availableProjects.filter((project) => project.type === activeType) : availableProjects;
 
   useLayoutEffect(() => {
     registerMotion();
@@ -50,7 +52,7 @@ export default function Projects({ categorized = false, asPage = false }: { cate
   return (
     <section ref={section} id="projects" data-scroll-section className="projects-section">
       <div className="projects-header">
-        <div><span>03 / SELECTED WORK</span><span className="project-count">(03 PROJECTS)</span></div>
+        <div><span>03 / SELECTED WORK</span><span className="project-count">({String(availableProjects.length).padStart(2, "0")} PROJECTS)</span></div>
         <Heading>Selected work that turns<br />ideas into <em>impact.</em></Heading>
         <p>A collection of digital products shaped through strategy, design, and thoughtful technology.</p>
       </div>
