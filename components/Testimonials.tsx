@@ -111,7 +111,7 @@ export default function Testimonials() {
         <div className="testimonials-empty">
           <span>01 / YOUR STORY COULD BE HERE</span>
           <h3>No reviews yet.</h3>
-          <p>Worked with me before? Share your experience and it will appear here immediately.</p>
+          <p>Worked with me before? Submit your experience for review and publication.</p>
           <button type="button" onClick={() => setModalOpen(true)}>Add the first review <Plus size={18} /></button>
         </div>
       )}
@@ -127,7 +127,6 @@ export default function Testimonials() {
       <ReviewModal
         open={modalOpen}
         onClose={closeModal}
-        onReviewAdded={(review) => setReviews((current) => [review, ...current])}
       />
     </section>
   );
