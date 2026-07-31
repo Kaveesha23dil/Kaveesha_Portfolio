@@ -52,22 +52,16 @@ async function responseError(response: Response, fallback: string) {
   }
 }
 
-export async function getReviews(signal?: AbortSignal): Promise<StoredReview[]> {
-  if (!supabaseUrl || !supabaseKey) return [];
-  const columns = "id,full_name,job_title,company_name,review_text,rating,project_type,created_at";
-  const response = await fetch(
-    `${supabaseUrl}/rest/v1/reviews?status=eq.approved&select=${columns}&order=created_at.desc`,
-    { headers: publicHeaders(), signal, cache: "no-store" },
-  );
+export async function getReviews(): Promise<StoredReview[]> {
+  const response = await fetch("/api/reviews", { cache: "no-store" });
   if (!response.ok) throw await responseError(response, "Reviews could not be loaded.");
   return response.json() as Promise<StoredReview[]>;
 }
 
 export async function saveReview(submission: ReviewSubmission): Promise<void> {
-  ensureConfigured();
-  const response = await fetch(`${supabaseUrl}/rest/v1/reviews`, {
+  const response = await fetch("/api/reviews", {
     method: "POST",
-    headers: publicHeaders("return=minimal"),
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(submission),
   });
   if (!response.ok) throw await responseError(response, "Your review could not be submitted.");
