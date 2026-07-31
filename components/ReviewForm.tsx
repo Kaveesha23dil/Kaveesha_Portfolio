@@ -1,7 +1,7 @@
 "use client";
 
-import { FormEvent, useState } from "react";
-import { Send, Star } from "lucide-react";
+import { ChangeEvent, FormEvent, useRef, useState } from "react";
+import { ImagePlus, Send, Star, X } from "lucide-react";
 import { saveReview, type ReviewSubmission } from "@/lib/reviews";
 
 const projectTypes = ["UI/UX Design", "Web Development", "Brand Design", "Motion Design", "Other"];
@@ -9,6 +9,7 @@ const initialForm = {
   fullName: "",
   jobTitle: "",
   companyName: "",
+  avatarUrl: "",
   email: "",
   reviewText: "",
   rating: 0,
@@ -36,6 +37,7 @@ function validate(form: FormState): { errors: Errors; review?: ReviewSubmission 
   const projectType = projectTypes.includes(form.projectType) ? form.projectType : "";
 
   if (!fullName) errors.fullName = "Please enter your full name.";
+  if (!form.avatarUrl) errors.avatarUrl = "Please add your profile image.";
   if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors.email = "Please enter a valid email address.";
   if (!reviewText) errors.reviewText = "Please write your review.";
   if (reviewText.length > 500) errors.reviewText = "Your review must be 500 characters or fewer.";
@@ -48,6 +50,7 @@ function validate(form: FormState): { errors: Errors; review?: ReviewSubmission 
       full_name: fullName,
       job_title: jobTitle || "Client",
       company_name: companyName || null,
+      avatar_url: form.avatarUrl,
       email: email || undefined,
       review_text: reviewText,
       rating: form.rating,
@@ -61,11 +64,37 @@ export default function ReviewForm({ onSuccess }: Props) {
   const [errors, setErrors] = useState<Errors>({});
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [submitError, setSubmitError] = useState("");
+  const fileInput = useRef<HTMLInputElement>(null);
 
   const update = (field: keyof FormState, value: string | number) => {
     setForm((current) => ({ ...current, [field]: value }));
     setErrors((current) => ({ ...current, [field]: undefined }));
     if (status === "error") setStatus("idle");
+  };
+
+  const handleImage = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type) || file.size > 5 * 1024 * 1024) {
+      setErrors((current) => ({ ...current, avatarUrl: "Choose a JPG, PNG, or WebP image under 5 MB." }));
+      event.target.value = "";
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      const image = new Image();
+      image.onload = () => {
+        const size = Math.min(image.width, image.height);
+        const canvas = document.createElement("canvas");
+        canvas.width = 420;
+        canvas.height = 420;
+        canvas.getContext("2d")?.drawImage(image, (image.width - size) / 2, (image.height - size) / 2, size, size, 0, 0, 420, 420);
+        update("avatarUrl", canvas.toDataURL("image/jpeg", 0.82));
+      };
+      image.onerror = () => setErrors((current) => ({ ...current, avatarUrl: "This image could not be processed." }));
+      image.src = String(reader.result);
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -92,6 +121,21 @@ export default function ReviewForm({ onSuccess }: Props) {
   return (
     <form className="review-form" onSubmit={handleSubmit} noValidate>
       <div className="review-form-grid">
+        <div className="review-field review-field--wide">
+          <label htmlFor="review-avatar">PROFILE IMAGE <span>*</span></label>
+          <div className="review-image-upload">
+            {form.avatarUrl ? (
+              <div className="review-image-preview">
+                <img src={form.avatarUrl} alt="Profile preview" />
+                <button type="button" onClick={() => { update("avatarUrl", ""); if (fileInput.current) fileInput.current.value = ""; }} aria-label="Remove profile image"><X size={16} /></button>
+              </div>
+            ) : <span><ImagePlus size={24} /></span>}
+            <div><strong>{form.avatarUrl ? "IMAGE READY" : "ADD YOUR PHOTO"}</strong><small>JPG, PNG or WebP · Maximum 5 MB</small></div>
+            <label className="review-image-button" htmlFor="review-avatar">{form.avatarUrl ? "CHANGE" : "CHOOSE IMAGE"}</label>
+            <input ref={fileInput} id="review-avatar" type="file" accept="image/jpeg,image/png,image/webp" onChange={handleImage} aria-invalid={Boolean(errors.avatarUrl)} aria-describedby={errors.avatarUrl ? "review-avatar-error" : undefined} />
+          </div>
+          {errors.avatarUrl && <small id="review-avatar-error" role="alert">{errors.avatarUrl}</small>}
+        </div>
         <div className="review-field">
           <label htmlFor="review-name">FULL NAME <span>*</span></label>
           <input id="review-name" value={form.fullName} onChange={(event) => update("fullName", event.target.value)} maxLength={100} autoComplete="name" aria-invalid={Boolean(errors.fullName)} aria-describedby={errors.fullName ? "review-name-error" : undefined} />

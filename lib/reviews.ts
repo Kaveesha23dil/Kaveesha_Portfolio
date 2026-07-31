@@ -3,6 +3,7 @@ export type StoredReview = {
   full_name: string;
   job_title: string;
   company_name: string | null;
+  avatar_url: string | null;
   review_text: string;
   rating: number;
   project_type: string | null;
@@ -125,7 +126,7 @@ async function authenticatedHeaders(session: SupabaseSession, prefer?: string): 
 
 export async function getReviewsForModeration(session: SupabaseSession): Promise<ModeratedReview[]> {
   ensureConfigured();
-  const columns = "id,full_name,job_title,company_name,email,review_text,rating,project_type,status,created_at";
+  const columns = "id,full_name,job_title,company_name,email,avatar_url,review_text,rating,project_type,status,created_at";
   const response = await fetch(
     `${supabaseUrl}/rest/v1/reviews?select=${columns}&order=created_at.desc`,
     { headers: await authenticatedHeaders(session), cache: "no-store" },
