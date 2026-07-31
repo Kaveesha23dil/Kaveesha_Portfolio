@@ -27,22 +27,21 @@ export default function Testimonials() {
   const closeModal = useCallback(() => setModalOpen(false), []);
 
   useEffect(() => {
-    const controller = new AbortController();
+    let active = true;
     const loadReviews = async () => {
       try {
-        setReviews(await getReviews(controller.signal));
-      } catch (error) {
-        if (!(error instanceof DOMException && error.name === "AbortError")) {
-          setReviews([]);
-        }
+        const nextReviews = await getReviews();
+        if (active) setReviews(nextReviews);
+      } catch {
+        if (active) setReviews([]);
       } finally {
-        if (!controller.signal.aborted) setLoading(false);
+        if (active) setLoading(false);
       }
     };
     void loadReviews();
     const refresh = window.setInterval(() => void loadReviews(), 30_000);
     return () => {
-      controller.abort();
+      active = false;
       window.clearInterval(refresh);
     };
   }, []);
@@ -68,11 +67,17 @@ export default function Testimonials() {
       });
       const mm = gsap.matchMedia();
       mm.add(motionMedia.desktop, () => {
-        gsap.from(".testimonial-card", { scrollTrigger: { trigger: ".testimonials-grid", start: "top 78%" }, y: 50, scale: .96, opacity: 0, duration: .85, stagger: .12, ease: "power3.out" });
-        gsap.from(".testimonial-card blockquote", { scrollTrigger: { trigger: ".testimonials-grid", start: "top 70%" }, clipPath: "inset(0 0 100% 0)", y: 18, duration: .8, stagger: .1, ease: "power3.out" });
+        const grid = section.current?.querySelector(".testimonials-grid");
+        if (grid) {
+          gsap.from(grid.querySelectorAll(".testimonial-card"), { scrollTrigger: { trigger: grid, start: "top 78%" }, y: 50, scale: .96, opacity: 0, duration: .85, stagger: .12, ease: "power3.out" });
+          gsap.from(grid.querySelectorAll(".testimonial-card blockquote"), { scrollTrigger: { trigger: grid, start: "top 70%" }, clipPath: "inset(0 0 100% 0)", y: 18, duration: .8, stagger: .1, ease: "power3.out" });
+        }
         gsap.to(".testimonial-halo", { rotate: 90, scrollTrigger: { trigger: section.current, start: "top bottom", end: "bottom top", scrub: 1.2 } });
       });
-      mm.add(motionMedia.mobile, () => gsap.from(".testimonial-card", { scrollTrigger: { trigger: ".testimonials-grid", start: "top 84%" }, y: 24, opacity: 0, duration: .6, stagger: .08, ease: "power2.out" }));
+      mm.add(motionMedia.mobile, () => {
+        const grid = section.current?.querySelector(".testimonials-grid");
+        if (grid) gsap.from(grid.querySelectorAll(".testimonial-card"), { scrollTrigger: { trigger: grid, start: "top 84%" }, y: 24, opacity: 0, duration: .6, stagger: .08, ease: "power2.out" });
+      });
     }, section);
     return () => ctx.revert();
   }, []);
