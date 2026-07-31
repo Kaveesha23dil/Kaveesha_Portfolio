@@ -277,6 +277,8 @@ h1 em::after { content: ""; position: absolute; height: 7px; width: 108%; left: 
 .case-showcase-split { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(18px,3vw,44px); margin-top: 55px; align-items: start; }.case-showcase-split figure { margin: 0; padding: 12px; background: #050706; border: 1px solid #333833; }.case-showcase-split figure:nth-child(2) { margin-top: 100px; }.case-showcase-split img { width: 100%; height: auto; display: block; }.case-showcase-split figcaption { padding: 15px 3px 4px; color: #666c66; font-size: 8px; font-weight: 750; letter-spacing: .14em; }
 .case-impact { display: grid; grid-template-columns: .35fr 1.65fr; gap: 50px; padding-top: 145px; padding-bottom: 145px; background: #527ff1; color: #090b10; }.case-impact-index { padding-top: 12px; font-size: 9px; font-weight: 800; letter-spacing: .15em; }.case-impact-copy h2 { margin: 0; font-size: clamp(50px,7.2vw,116px); font-weight: 700; line-height: .91; letter-spacing: -.07em; }.case-impact-copy h2 em { color: #f5f6f8; font-style: italic; }.case-impact-copy p { max-width: 620px; margin: 50px 0 0 auto; font-size: 13px; line-height: 1.8; }
 
+.dev-overview { max-width: 980px; display: grid; gap: 18px; margin: 0 0 75px; }.dev-overview p { margin: 0; color: #b0b5ae; font-size: clamp(17px,1.65vw,24px); line-height: 1.7; letter-spacing: -.02em; }
+
 @media (max-width: 1100px) {
   .desktop-nav { gap: 18px; }.hero-shell { padding-inline: 36px; }.floating-note { right: -3%; }
 }
