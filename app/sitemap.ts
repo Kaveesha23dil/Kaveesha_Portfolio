@@ -8,6 +8,7 @@ const routes = [
   { path: "/projects/intrinsic-tech", lastModified: "2026-07-21" },
   { path: "/projects/gtavi-experience", lastModified: "2026-07-21" },
   { path: "/projects/windows-xp-portfolio", lastModified: "2026-07-21" },
+  { path: "/projects/quizserver", lastModified: "2026-07-31" },
   { path: "/contact", lastModified: "2026-07-25" },
 ] as const;
 

@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { ArrowLeft, ArrowUpRight, Asterisk, Check, Code2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, ArrowUpRight, Asterisk, Check, Code2, Database, MonitorCog, Server, Smartphone } from "lucide-react";
 import { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 import { motionMedia, registerMotion } from "@/components/motion";
@@ -15,8 +15,9 @@ export type DevelopmentProject = {
   role: string;
   scope: string;
   mockup: string;
-  live: string;
-  github: string;
+  live?: string;
+  github?: string;
+  deliverable?: string;
   challenge: string;
   solution: string;
   overview?: string[];
@@ -28,6 +29,10 @@ export type DevelopmentProject = {
   challenges: { title: string; detail: string }[];
   outcome: string;
   disclaimer?: string;
+  diagrams?: {
+    architecture: { title: string; detail: string; kind: "desktop" | "server" | "mobile" | "storage" }[];
+    flows: { role: string; steps: string[] }[];
+  };
 };
 
 export default function DevelopmentCaseStudy({ project }: { project: DevelopmentProject }) {
@@ -53,7 +58,7 @@ export default function DevelopmentCaseStudy({ project }: { project: Development
         <a href="/projects" className="case-back dev-hero-reveal"><ArrowLeft size={16} /> All projects</a>
         <div className="case-kicker dev-hero-reveal"><span>{project.eyebrow}</span><span>{project.year}</span></div>
         <div className="dev-title-row"><h1 className="dev-hero-reveal">{project.title}<br /><em>{project.accent}</em></h1><p className="dev-hero-reveal">{project.summary}</p></div>
-        <div className="case-meta dev-hero-reveal"><div><span>ROLE</span><strong>{project.role}</strong></div><div><span>SCOPE</span><strong>{project.scope}</strong></div><div><span>DELIVERABLE</span><strong>Production website</strong></div><a href={project.live} target="_blank" rel="noreferrer">View live site <ArrowUpRight size={17} /></a></div>
+        <div className="case-meta dev-hero-reveal"><div><span>ROLE</span><strong>{project.role}</strong></div><div><span>SCOPE</span><strong>{project.scope}</strong></div><div><span>DELIVERABLE</span><strong>{project.deliverable || "Production website"}</strong></div>{project.live ? <a href={project.live} target="_blank" rel="noreferrer">View live site <ArrowUpRight size={17} /></a> : <span className="case-local-label">LOCAL INSTALLATION</span>}</div>
         {project.disclaimer && <p className="case-disclaimer dev-hero-reveal">{project.disclaimer}</p>}
         <div className="dev-case-cover dev-hero-reveal"><Image src={project.mockup} alt={`${project.title} presentation mockup`} fill priority sizes="100vw" /></div>
       </section>
@@ -76,9 +81,21 @@ export default function DevelopmentCaseStudy({ project }: { project: Development
         <div className="dev-process-list">{project.process.map((step) => <article className="dev-reveal" key={step.number}><span>{step.number}</span><h3>{step.title}</h3><p>{step.detail}</p></article>)}</div>
       </section>
 
+      {project.diagrams && <section data-scroll-section className="dev-diagrams">
+        <div className="case-section-label dev-reveal"><Asterisk size={14} /> SYSTEM DESIGN</div>
+        <div className="dev-section-heading"><h2 className="dev-reveal">Desktop control meets<br /><em>browser participation.</em></h2><p className="dev-reveal">The platform keeps administration local while giving every participant a lightweight, installation-free browser experience.</p></div>
+        <div className="architecture-diagram dev-reveal" aria-label="QuizServer technical architecture">
+          {project.diagrams.architecture.map((node, index) => {
+            const Icon = node.kind === "desktop" ? MonitorCog : node.kind === "server" ? Server : node.kind === "mobile" ? Smartphone : Database;
+            return <div className={`architecture-node architecture-node--${node.kind}`} key={node.title}><span><Icon size={23} /></span><div><strong>{node.title}</strong><small>{node.detail}</small></div>{index < project.diagrams!.architecture.length - 1 && <ArrowRight className="architecture-arrow" size={18} />}</div>;
+          })}
+        </div>
+        <div className="flow-diagrams">{project.diagrams.flows.map((flow) => <article className="dev-reveal" key={flow.role}><span>{flow.role}</span><div>{flow.steps.map((step, index) => <div key={step}><b>{String(index + 1).padStart(2,"0")}</b><p>{step}</p></div>)}</div></article>)}</div>
+      </section>}
+
       <section data-scroll-section className="dev-technical">
         <div className="dev-feature-panel dev-reveal"><span>CORE FEATURES</span><ul>{project.features.map((feature) => <li key={feature}><Check size={14} />{feature}</li>)}</ul></div>
-        <div className="dev-stack-panel dev-reveal"><span>TECHNOLOGY</span><div>{project.stack.map((item) => <strong key={item}>{item}</strong>)}</div><a href={project.github} target="_blank" rel="noreferrer">Explore source code <ArrowUpRight size={17} /></a></div>
+        <div className="dev-stack-panel dev-reveal"><span>TECHNOLOGY</span><div>{project.stack.map((item) => <strong key={item}>{item}</strong>)}</div>{project.github ? <a href={project.github} target="_blank" rel="noreferrer">Explore source code <ArrowUpRight size={17} /></a> : <small>ACADEMIC GROUP PROTOTYPE</small>}</div>
       </section>
 
       <section data-scroll-section className="dev-challenges">
@@ -86,7 +103,7 @@ export default function DevelopmentCaseStudy({ project }: { project: Development
         <div className="dev-challenge-list">{project.challenges.map((item) => <article className="dev-reveal" key={item.title}><h3>{item.title}</h3><p>{item.detail}</p></article>)}</div>
       </section>
 
-      <section data-scroll-section className="case-closing dev-reveal"><span>THE OUTCOME</span><h2>{project.outcome}</h2><div><a href={project.live} target="_blank" rel="noreferrer">Open live project <ArrowUpRight size={18} /></a><a href={project.github} target="_blank" rel="noreferrer">View GitHub <ArrowUpRight size={18} /></a></div></section>
+      <section data-scroll-section className="case-closing dev-reveal"><span>THE OUTCOME</span><h2>{project.outcome}</h2>{(project.live || project.github) && <div>{project.live && <a href={project.live} target="_blank" rel="noreferrer">Open live project <ArrowUpRight size={18} /></a>}{project.github && <a href={project.github} target="_blank" rel="noreferrer">View GitHub <ArrowUpRight size={18} /></a>}</div>}</section>
     </main>
   );
 }
