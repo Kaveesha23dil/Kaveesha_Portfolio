@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, Download, Eye, Sparkles } from "lucide-react";
 import { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 import { INTRO_COMPLETE_EVENT, INTRO_SESSION_KEY, motionMedia } from "@/components/motion";
@@ -62,7 +62,21 @@ export default function Hero() {
           <p className="hero-reveal intro">I&apos;m Kaveesha Dilshan. I design and build user-centered websites, applications, and digital experiences that are beautiful, functional, and impactful.</p>
           <div className="hero-reveal actions">
             <a href="/projects" className="primary-btn">View Projects <ArrowRight size={17} /></a>
-            <a href="mailto:kaveeshadilshankd23@gmail.com" className="secondary-btn">Hire Me <ArrowRight size={17} /></a>
+            <a
+              href="/Kaveesha%20Resume%20Developer.pdf"
+              className="secondary-btn"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              View CV <Eye size={17} />
+            </a>
+            <a
+              href="/Kaveesha%20Resume%20Developer.pdf"
+              className="secondary-btn"
+              download="Kaveesha-Dilshan-Resume.pdf"
+            >
+              Download CV <Download size={17} />
+            </a>
           </div>
         </div>
 
