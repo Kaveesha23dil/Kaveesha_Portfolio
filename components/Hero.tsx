@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { ArrowRight, Download, Eye, Sparkles } from "lucide-react";
+import { ArrowRight, Eye, Sparkles } from "lucide-react";
 import { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 import { INTRO_COMPLETE_EVENT, INTRO_SESSION_KEY, motionMedia } from "@/components/motion";
@@ -69,13 +69,6 @@ export default function Hero() {
               rel="noopener noreferrer"
             >
               View CV <Eye size={17} />
-            </a>
-            <a
-              href="/Kaveesha%20Resume%20Developer.pdf"
-              className="secondary-btn"
-              download="Kaveesha-Dilshan-Resume.pdf"
-            >
-              Download CV <Download size={17} />
             </a>
           </div>
         </div>
