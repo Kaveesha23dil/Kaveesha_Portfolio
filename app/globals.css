@@ -51,7 +51,7 @@ h1 { font-size: clamp(50px, 5vw, 82px); line-height: 1.04; letter-spacing: -.055
 h1 em { position: relative; color: var(--lime); font-style: italic; font-weight: 700; }
 h1 em::after { content: ""; position: absolute; height: 7px; width: 108%; left: -2%; bottom: -7px; border-top: 4px solid var(--lime); border-radius: 50%; transform: rotate(-3deg); }
 .intro { max-width: 570px; color: #bec1bc; font-size: 14px; line-height: 1.7; margin: 23px 0 26px; }
-.actions { display: flex; gap: 18px; }
+.actions { display: flex; flex-wrap: wrap; gap: 18px; }
 .primary-btn, .secondary-btn { min-width: 185px; height: 54px; border-radius: 99px; display: flex; justify-content: space-between; align-items: center; padding: 0 27px; font-size: 12px; font-weight: 800; transition: transform .25s, background .25s; }
 .primary-btn { background: var(--lime); color: #0c0d08; }
 .secondary-btn { border: 1px solid #d5d8d2; }
