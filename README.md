@@ -23,6 +23,7 @@ Personal portfolio of **Kaveesha Dilshan**, a UI/UX designer and creative develo
 
 | Project | Focus | Year |
 | --- | --- | --- |
+| [ArchTitan OS](./app/projects/archtitan/page.tsx) | Website development, responsive research presentation, hosting | 2026 |
 | [Intrinsic Tech](./app/projects/intrinsic-tech/page.tsx) | Website redesign, information architecture, responsive UI/UX | 2026 |
 | [GTA VI Experience](./app/projects/gtavi-experience/page.tsx) | Creative development, GSAP, cinematic scroll interactions | 2025 |
 | [Windows XP Portfolio](./app/projects/windows-xp-portfolio/page.tsx) | React interface engineering, reusable windows, UI state | 2025 |
