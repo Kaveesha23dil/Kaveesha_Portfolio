@@ -5,6 +5,7 @@ const routes = [
   { path: "", lastModified: "2026-07-25" },
   { path: "/about", lastModified: "2026-07-25" },
   { path: "/projects", lastModified: "2026-07-25" },
+  { path: "/projects/archtitan", lastModified: "2026-09-18" },
   { path: "/projects/intrinsic-tech", lastModified: "2026-07-21" },
   { path: "/projects/gtavi-experience", lastModified: "2026-07-21" },
   { path: "/projects/windows-xp-portfolio", lastModified: "2026-07-21" },
