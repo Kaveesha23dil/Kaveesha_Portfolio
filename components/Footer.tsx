@@ -9,6 +9,7 @@ import { motionMedia, registerMotion } from "@/components/motion";
 const navigation = [
   { label: "Home", href: "/" },
   { label: "Selected work", href: "/projects" },
+  { label: "Blog", href: "/blog" },
   { label: "Services", href: "/about#services" },
   { label: "About", href: "/about" },
   { label: "Process", href: "/about#process" },

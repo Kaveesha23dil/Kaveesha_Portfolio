@@ -92,6 +92,12 @@ portfolio/
 └── .env.example         # Production URL configuration
 ```
 
+## Adding blog posts
+
+Add an entry to `blogPosts` in `lib/blog.ts` with a title, unique URL-safe slug, excerpt, category, `publishedAt` date (`YYYY-MM-DD`), and sections containing a heading and paragraph strings. Articles appear newest first on `/blog`; the homepage shows the latest three. Each entry automatically gets a `/blog/[slug]` page and sitemap entry. Only add articles that are ready to publish; an empty list displays the coming-soon state. Rebuild after adding posts.
+
+The first article is stored in `content/blog/sentinelapi.json` and imported by `lib/blog.ts`. Long articles can use `content` for Markdown paragraphs, second- and third-level headings, lists, tables, fenced code, and local images. Copy selected public images into `public/blog/<article>/` and use descriptive captions. Optional `cover`, `coverAlt`, and `coverCaption` fields control the article cover and card preview. The SentinelAPI dashboard images show demo fixtures; the captions distinguish them from controlled runtime evidence and synthetic ML charts.
+
 ## Deployment
 
 The simplest deployment path is [Vercel](https://vercel.com/). Import the GitHub repository, add `NEXT_PUBLIC_SITE_URL` with the production domain, and deploy. The standard Next.js build command is already configured.

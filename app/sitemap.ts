@@ -1,9 +1,11 @@
 import type { MetadataRoute } from "next";
 import { absoluteUrl } from "@/lib/site";
+import { getBlogPosts } from "@/lib/blog";
 
 const routes = [
   { path: "", lastModified: "2026-07-25" },
   { path: "/about", lastModified: "2026-07-25" },
+  { path: "/blog", lastModified: "2026-10-24" },
   { path: "/projects", lastModified: "2026-07-25" },
   { path: "/projects/archtitan", lastModified: "2026-09-18" },
   { path: "/projects/intrinsic-tech", lastModified: "2026-07-21" },
@@ -14,7 +16,7 @@ const routes = [
 ] as const;
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  return routes.map(({ path, lastModified }) => ({
+  return [...routes, ...getBlogPosts().map((post) => ({ path: `/blog/${post.slug}`, lastModified: post.publishedAt }))].map(({ path, lastModified }) => ({
     url: absoluteUrl(path || "/"),
     lastModified: new Date(lastModified),
     changeFrequency: path.startsWith("/projects/") ? "monthly" : "weekly",
