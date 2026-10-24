@@ -10,6 +10,9 @@ export type BlogPost = {
   coverAlt?: string;
   coverCaption?: string;
   content?: string;
+  subtitle?: string;
+  tags?: string[];
+  repository?: string;
   sections: { heading: string; paragraphs: string[] }[];
 };
 

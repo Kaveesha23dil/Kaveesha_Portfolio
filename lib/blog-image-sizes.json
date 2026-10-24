@@ -1,0 +1,34 @@
+{
+  "/blog/sentinelapi/alert-evidence.png": {
+    "height": 787,
+    "width": 1896
+  },
+  "/blog/sentinelapi/confusion-matrix.png": {
+    "height": 500,
+    "width": 600
+  },
+  "/blog/sentinelapi/dashboard.png": {
+    "height": 865,
+    "width": 1897
+  },
+  "/blog/sentinelapi/gateway-events.png": {
+    "height": 645,
+    "width": 1146
+  },
+  "/blog/sentinelapi/model-comparison.png": {
+    "height": 400,
+    "width": 700
+  },
+  "/blog/sentinelapi/publisher.png": {
+    "height": 866,
+    "width": 1897
+  },
+  "/blog/sentinelapi/rate-policy.png": {
+    "height": 530,
+    "width": 982
+  },
+  "/blog/sentinelapi/score-distribution.png": {
+    "height": 400,
+    "width": 700
+  }
+}
