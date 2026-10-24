@@ -1,5 +1,17 @@
-import Image from "next/image";
 import type { ReactNode } from "react";
+import ArticleCode from "@/components/blog/ArticleCode";
+import ArticleScreenshot, { type ArticleImage } from "@/components/blog/ArticleScreenshot";
+import SentinelArchitecture from "@/components/blog/SentinelArchitecture";
+import imageSizes from "@/lib/blog-image-sizes.json";
+
+export function articleImage(src: string, alt: string): ArticleImage {
+  const sizes = imageSizes as Record<string, { width: number; height: number }>;
+  return { src, alt, ...(sizes[src] || { width: 1900, height: 1000 }) };
+}
+
+export function articleGallery(content: string): ArticleImage[] {
+  return [...content.matchAll(/^!\[(.*?)\]\((\/blog\/[^)]+)\)$/gm)].map((match) => articleImage(match[2], match[1]));
+}
 
 function inline(text: string): ReactNode[] {
   return text.split(/(\*\*[^*]+\*\*|`[^`]+`|\*[^*]+\*|https:\/\/[^\s]+)/g).map((part, index) => {
@@ -12,30 +24,35 @@ function inline(text: string): ReactNode[] {
 }
 
 export function blogHeadingId(text: string) {
-  return text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  return `section-${text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}`;
 }
 
 // A deliberately small renderer for our local editorial content; no raw HTML.
 export default function BlogContent({ content }: { content: string }) {
   const lines = content.split("\n");
   const blocks: ReactNode[] = [];
+  const gallery = articleGallery(content);
   for (let i = 0; i < lines.length;) {
     const line = lines[i].trim();
     const key = i;
     if (!line) { i++; continue; }
     if (line.startsWith("```")) {
+      const language = line.slice(3).trim();
       const code: string[] = [];
       i++;
       while (i < lines.length && !lines[i].startsWith("```")) code.push(lines[i++]);
       i++;
-      blocks.push(<pre key={key}><code>{code.join("\n")}</code></pre>);
+      blocks.push(<ArticleCode key={key} code={code.join("\n")} language={language} />);
+    } else if (line === "[[SENTINEL_ARCHITECTURE]]") {
+      blocks.push(<SentinelArchitecture key={key} />);
+      i++;
     } else if (/^#{2,3} /.test(line)) {
       const heading = line.replace(/^#+ /, "");
-      blocks.push(line.startsWith("###") ? <h3 key={key}>{heading}</h3> : <h2 id={blogHeadingId(heading)} key={key}>{heading}</h2>);
+      blocks.push(line.startsWith("###") ? <h3 key={key}>{heading}</h3> : <h2 id={blogHeadingId(heading)} tabIndex={-1} key={key}>{heading}</h2>);
       i++;
     } else if (line.startsWith("![")) {
       const match = line.match(/^!\[(.*?)\]\((\/blog\/[^)]+)\)$/);
-      if (match) blocks.push(<figure key={key}><a href={match[2]} target="_blank" rel="noreferrer" aria-label={`Open full-size image: ${match[1]}`}><Image src={match[2]} alt={match[1]} width={1900} height={1000} sizes="(max-width: 900px) 90vw, 900px" className="blog-screenshot" /></a><figcaption>{match[1]}</figcaption></figure>);
+      if (match) blocks.push(<ArticleScreenshot key={key} image={articleImage(match[2], match[1])} gallery={gallery} />);
       i++;
     } else if (line.startsWith("|")) {
       const rows: string[][] = [];

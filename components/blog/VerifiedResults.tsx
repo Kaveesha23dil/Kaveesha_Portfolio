@@ -1,0 +1,5 @@
+export default function VerifiedResults() {
+  return <section className="verified-results" aria-labelledby="verified-results-heading"><div className="article-section-intro"><span className="blog-eyebrow">CONTROLLED LOCAL VALIDATION</span><h2 id="verified-results-heading">Verified Engineering Results</h2><p>A historical verification snapshot, not live counters or evidence of a confirmed attack.</p></div><div className="verified-grid">
+    {[{ value: "HTTP 429", label: "Rate limiting verified", detail: "Actual WSO2 throttling responses observed during controlled testing." }, { value: "75", label: "Gateway events persisted", detail: "PostgreSQL event count recorded during a verified local test. Historical count, not a live counter." }, { value: "16", label: "Linked evidence records", detail: "Gateway events linked to a genuinely persisted API error-rate alert." }].map((result) => <div className="verified-card" key={result.value}><strong>{result.value}</strong><h3>{result.label}</h3><p>{result.detail}</p></div>)}
+  </div></section>;
+}
