@@ -46,6 +46,12 @@ export default function BlogContent({ content }: { content: string }) {
     } else if (line === "[[SENTINEL_ARCHITECTURE]]") {
       blocks.push(<SentinelArchitecture key={key} />);
       i++;
+    } else if (line.startsWith("### ") && lines[i + 2]?.startsWith("**Problem.**")) {
+      const heading = line.slice(4);
+      const start = i + 1;
+      i++;
+      while (i < lines.length && !/^#{2,3} /.test(lines[i])) i++;
+      blocks.push(<section className="article-challenge" key={key}><h3>{heading}</h3><BlogContent content={lines.slice(start, i).join("\n")} /></section>);
     } else if (/^#{2,3} /.test(line)) {
       const heading = line.replace(/^#+ /, "");
       blocks.push(line.startsWith("###") ? <h3 key={key}>{heading}</h3> : <h2 id={blogHeadingId(heading)} tabIndex={-1} key={key}>{heading}</h2>);
