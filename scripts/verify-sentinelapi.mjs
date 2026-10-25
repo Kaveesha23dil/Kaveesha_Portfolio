@@ -10,7 +10,7 @@ import assert from 'node:assert/strict';
   const output = path.resolve('.next/article-qa');
   fs.mkdirSync(output, { recursive: true });
   try {
-    for (const width of [1440, 768, 390, 375]) {
+    for (const width of [1440, 1024, 768, 390, 375]) {
       const context = await browser.newContext({ viewport: { width, height: 1000 }, reducedMotion: 'reduce', permissions: ['clipboard-read', 'clipboard-write'] });
       const page = await context.newPage();
       const errors = [];
@@ -50,6 +50,36 @@ import assert from 'node:assert/strict';
       await page.locator('.article-toc summary').click();
       assert.equal(await page.locator('.article-toc details').getAttribute('open'), null);
       await page.locator('.article-toc summary').click();
+      assert.equal(await page.locator('.article-challenge').count(), 3);
+      for (const button of await page.locator('.article-image-button').all()) {
+        const expected = await button.locator('img').getAttribute('alt');
+        const before = await page.evaluate(() => document.documentElement.clientWidth);
+        await button.click();
+        const viewer = page.locator('dialog[open]');
+        const gallery = await viewer.locator('a').getAttribute('href');
+        assert.equal(await viewer.locator('img').getAttribute('alt'), expected);
+        assert.equal(await viewer.locator('p').innerText(), expected);
+        await viewer.locator('img').evaluate(image => image.decode());
+        assert.equal(await page.evaluate(() => document.documentElement.clientWidth), before);
+        await viewer.locator('img').click();
+        assert.equal(await viewer.count(), 1);
+        await viewer.getByRole('button', { name: 'Next →', exact: true }).click();
+        const next = await viewer.locator('a').getAttribute('href');
+        assert.notEqual(next, gallery);
+        await page.keyboard.press('ArrowLeft');
+        assert.equal(await viewer.locator('a').getAttribute('href'), gallery);
+        await page.keyboard.press('ArrowRight');
+        assert.equal(await viewer.locator('a').getAttribute('href'), next);
+        await viewer.getByRole('button', { name: '← Previous', exact: true }).click();
+        assert.equal(await viewer.locator('img').getAttribute('src'), gallery);
+        assert.equal(await viewer.locator('p').innerText(), expected);
+        await page.keyboard.press('Escape');
+        assert.ok(await button.evaluate(element => element === document.activeElement));
+      }
+      for (const block of await page.locator('.article-code').all()) {
+        await block.getByRole('button', { name: 'Copy code', exact: true }).click();
+        assert.equal((await page.evaluate(() => navigator.clipboard.readText())).replace(/\r\n/g, '\n'), await block.locator('code').innerText());
+      }
       const trigger = page.locator('.blog-body .article-image-button').first();
       await trigger.click();
       const modal = page.locator('dialog[open]');
@@ -74,7 +104,7 @@ import assert from 'node:assert/strict';
       await page.getByRole('button', { name: 'Copy code', exact: true }).first().click();
       assert.equal((await page.evaluate(() => navigator.clipboard.readText())).replace(/\r\n/g, '\n'), '{\n  "code": "900902",\n  "message": "Missing Credentials"\n}');
       assert.equal(await page.locator('link[rel="canonical"]').getAttribute('href'), 'https://kaveesha-portfolio-khaki.vercel.app/blog/engineering-sentinelapi-api-security-monitoring');
-      assert.ok(await page.getByRole('link', { name: 'Explore SentinelAPI Case Study' }).count());
+      assert.ok(await page.getByRole('link', { name: 'Explore Project Case Study' }).count());
       assert.deepEqual(errors, []);
       console.log(`PASS ${width}px: layout, image loading/aspect ratios, TOC anchors/active state, code/copy, lightbox keyboard/close/focus, canonical, console.`);
       await context.close();
@@ -85,6 +115,18 @@ import assert from 'node:assert/strict';
     await normalPage.locator('.article-toc a').nth(1).click();
     await normalPage.waitForFunction(() => { const top = document.getElementById('section-2-system-architecture-key-trade-offs').getBoundingClientRect().top; return top >= 95 && top <= 125; });
     console.log('PASS normal-motion anchor scrolling alongside the existing portfolio scroll controller.');
+    await normalPage.locator('.article-challenge').first().screenshot({ path: path.join(output, 'oauth-challenge.png') });
+    const caseLink = normalPage.getByRole('link', { name: 'Explore Project Case Study' });
+    assert.equal(await caseLink.getAttribute('href'), '/projects/sentinelapi');
+    await caseLink.click();
+    await normalPage.waitForURL('**/projects/sentinelapi');
+    const articleLink = normalPage.getByRole('link', { name: 'Read Technical Article' });
+    assert.equal(await articleLink.getAttribute('href'), '/blog/engineering-sentinelapi-api-security-monitoring');
+    await articleLink.click();
+    await normalPage.waitForURL('**/blog/engineering-sentinelapi-api-security-monitoring');
+    assert.equal(await normalPage.getByRole('link', { name: 'View Source on GitHub' }).first().getAttribute('href'), 'https://github.com/Kaveesha23dil/sentinelapi');
+    assert.equal((await normalPage.request.get(new URL('/blog', normalPage.url()).href)).status(), 200);
+    console.log('PASS article/case-study round trip, GitHub destination, and blog index.');
     await normal.close();
   } finally { await browser.close(); }
 })().catch(error => { console.error(error); process.exitCode = 1; });

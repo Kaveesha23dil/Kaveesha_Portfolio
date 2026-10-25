@@ -70,3 +70,30 @@ Use a local Playwright installation or set `PLAYWRIGHT_MODULE` to an existing Pl
 Feature branch: `codex/polish-sentinelapi-article`.
 
 The focused commit covers the article, rendering components, scoped styles, checks, and this review record. Review with `git show --stat` and `git show`; run the checks above before publishing. No push or deployment is performed as part of this task.
+
+## Final polish verification — 25 October 2026
+
+The working tree was clean on `codex/polish-sentinelapi-article` before this pass. Inspection found that fenced snippets, responsive architecture, native modal behavior, and table-of-contents navigation were already implemented. No reproduced fence-rendering or selected-image indexing failure required a rewrite.
+
+Changes in this pass:
+
+- `content/blog/sentinelapi.json`: OAuth debugging now explicitly uses Problem, Diagnosis, Resolution, and Lesson; existing token-handling evidence and JSON remain intact.
+- `components/BlogContent.tsx`: challenge headings followed by the explicit Problem paragraph render as semantic sections, preserving their nested code blocks.
+- `app/blog/[slug]/article.css`: a restrained left border groups each of the three challenges. Previously these paragraphs had no visual grouping.
+- `components/blog/ArticleScreenshot.tsx`: each dialog initializes to its own screenshot instead of every closed dialog initially describing the first PostgreSQL image. Opening already selected the right image; this removes the misleading initial duplicate state.
+- `app/blog/[slug]/page.tsx` and `app/projects/sentinelapi/page.tsx`: existing links use View Source on GitHub, Explore Project Case Study, and Read Technical Article. No links were added.
+- `scripts/verify-sentinelapi.mjs`: adds 1024px, every screenshot trigger, caption/source checks, next/previous and arrow navigation, image-click containment, width stability, all code-copy buttons, and the article/case-study round trip.
+
+Verification:
+
+- Production `npm run build`: passed, all 22 pages generated. Initial sandbox attempts failed with Turbopack child-process / filesystem permission errors; the standard build succeeded outside the sandbox. No build configuration changed.
+- `npm run lint`: passed with zero errors and the same two existing next/no-img-element warnings in ReviewCard and ReviewForm.
+- `npx tsc --noEmit`: passed.
+- Browser checks passed at 1440, 1024, 768, 390, and 375px against the local production build. Nine screenshot triggers loaded with correct aspect ratios and matching selected captions; all three code blocks rendered without fences and copied exact text. Close, backdrop, Escape, keyboard navigation, zoom, focus containment and return, and page-width stability passed.
+- TOC destinations, active state, collapse control, header offset, reduced-motion and normal-motion scrolling passed. No browser console or runtime errors were reported.
+- The existing architecture stacks on mobile without overflow and distinguishes gateway requests from asynchronous processing and experimental ML; no diagram edits were needed.
+- Visually inspected mobile hero, desktop/mobile architecture, and the OAuth challenge. Element captures of the tall architecture may include the fixed global header overlay; that is a capture artifact during scrolling.
+- Article/case-study links navigate in both directions. GitHub repository was opened successfully through the web tool. Blog index responds successfully. There is only one article route in the current content set, so no other article exists to regression-test.
+- There is no configured formatter or separate unit/component test command. The existing browser verification script was extended and run instead. Git whitespace checking is used for the focused diff.
+
+Original technical values, screenshot files, SEO metadata, and routes were preserved. Previously documented missing clean source captures remain an editorial limitation; this pass introduces no placeholder evidence. No push or deployment was performed.

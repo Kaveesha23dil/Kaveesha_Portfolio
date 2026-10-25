@@ -50,7 +50,7 @@ export default function SentinelAPIPage() {
   return <>
     <JsonLd data={[{ "@context": "https://schema.org", "@type": "CreativeWork", name: "SentinelAPI", description, url: absoluteUrl("/projects/sentinelapi"), image: absoluteUrl(project.mockup), author: { "@id": `${siteConfig.url}/#person` }, sameAs: project.github }, createProjectBreadcrumb("SentinelAPI", "/projects/sentinelapi")]} />
     <DevelopmentCaseStudy project={project} />
-    <section className="blog-section" aria-label="SentinelAPI engineering article"><div className="blog-intro"><div><h2>Go behind the build.</h2><p>Read the full engineering story, with gateway configuration, database evidence, and the controlled ML evaluation charts.</p></div><Link className="blog-link" href="/blog/engineering-sentinelapi-api-security-monitoring">Read the technical article ↗</Link></div></section>
+    <section className="blog-section" aria-label="SentinelAPI engineering article"><div className="blog-intro"><div><h2>Go behind the build.</h2><p>Read the full engineering story, with gateway configuration, database evidence, and the controlled ML evaluation charts.</p></div><Link className="blog-link" href="/blog/engineering-sentinelapi-api-security-monitoring">Read Technical Article ↗</Link></div></section>
     <Footer />
   </>;
 }

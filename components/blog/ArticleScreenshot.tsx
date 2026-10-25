@@ -7,7 +7,7 @@ export type ArticleImage = { src: string; alt: string; width: number; height: nu
 
 export default function ArticleScreenshot({ image, gallery, priority = false }: { image: ArticleImage; gallery: ArticleImage[]; priority?: boolean }) {
   const dialog = useRef<HTMLDialogElement>(null);
-  const [index, setIndex] = useState(0);
+  const [index, setIndex] = useState(() => Math.max(0, gallery.findIndex((entry) => entry.src === image.src)));
   const [zoomed, setZoomed] = useState(false);
   const current = gallery[index] || image;
   const move = (direction: number) => { setZoomed(false); setIndex((value) => (value + direction + gallery.length) % gallery.length); };
